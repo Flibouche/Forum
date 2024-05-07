@@ -1,10 +1,10 @@
 <?php
-    $users = $result["data"]['user']; 
+$users = $result["data"]['users'];
 ?>
 
 <h1>Liste des utilisateurs</h1>
 
 <?php
-foreach($users as $user ){ ?>
-    <p><a href="#"><?= $user ?></a> par <?= $user->getUser() ?></p>
+foreach ($users as $user) { ?>
+    <p><a href="index.php?ctrl=forum&action=displayUser&id=<?= $user->getId() ?>"><?= $user ?></a></p>
 <?php }
