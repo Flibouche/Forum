@@ -6,6 +6,7 @@ use App\Session;
 use App\AbstractController;
 use App\ControllerInterface;
 use Model\Managers\CategoryManager;
+use Model\Managers\PostManager;
 use Model\Managers\TopicManager;
 use Model\Managers\UserManager;
 
@@ -76,6 +77,24 @@ class ForumController extends AbstractController implements ControllerInterface
             "meta_description" => "Information de l'utilisateur : " . $user,
             "data" => [
                 "user" => $user
+            ]
+        ];
+    }
+
+    public function listPosts($id)
+    {
+
+        $topicManager = new TopicManager();
+        $postManager = new PostManager();
+        $topic = $topicManager->findOneById($id);
+        $posts = $postManager->findPostsByTopic($id);
+
+        return [
+            "view" => VIEW_DIR . "forum/listPosts.php",
+            "meta_description" => "Liste des posts du topic",
+            "data" => [
+                "topic" => $topic,
+                "posts" => $posts
             ]
         ];
     }
