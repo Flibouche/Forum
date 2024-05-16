@@ -1,9 +1,81 @@
+/*========================== GOOGLE FONTS =======================*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ==================================================== */
+/* ================== VARIABLES CSS =================== */
+/* ==================================================== */
+:root {
+    /*========== Colors ==========*/
+    --white-color1: #fbf5ef;
+    --yellow-color2: #f2d3ab;
+    --skin-color3: #c69fa5;
+    --purple-color4: #8b6d9c;
+    --blue-color5: #494d7e;
+    --darkblue-color6: #272744;
+
+    /*========== Fonts and typography ==========*/
+    --body-font: "Montserrat", sans-serif;
+
+    /*========== Fonts weight ==========*/
+    --font-regular: 400;
+    --font-semi-bold: 600;
+    --font-bold: 700;
+
+    /*========== z index ==========*/
+    --z-tooltip: 10;
+    --z-fixed: 100;
+}
+
+/*========================== BASE ======================*/
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--body-font);
+}
+
 h1 {
-    color: rgb(0, 122, 156);
+    color: var(--darkblue-color6);
+    font-weight: var(--font-semi-bold);
+}
+
+a {
+    color: var(--white-color1);
+    text-decoration: none;
+    transition: .7s;
+}
+
+a:hover {
+    color: var(--skin-color3);
+}
+
+/*========================== REUSABLE CSS CLASSES ======================*/
+
+nav {
+    display: flex;
+    height: 5vh;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--darkblue-color6);
+}
+
+#wrapper {
+    min-height: 100vh;
+}
+
+.container {
+    width: clamp(330px, 80vw, 954px);
+    margin-inline: .7rem;
+}
+
+footer {
+    background-color: pink;
 }
