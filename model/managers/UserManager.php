@@ -16,4 +16,22 @@ class UserManager extends Manager
     {
         parent::connect();
     }
+
+    public function register($data)
+    {
+        $keys = array_keys($data);
+
+        $values = array_values($data);
+
+        $sql = "INSERT INTO " . $this->tableName . "
+                (" . implode(',', $keys) . ") 
+                VALUES
+                ('" . implode("','", $values) . "')";
+        try {
+            return DAO::insert($sql);
+        } catch (\PDOException $e) {
+            echo $e->getMessage();
+            die();
+        }
+    }
 }
