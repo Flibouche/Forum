@@ -2,10 +2,9 @@
 $categories = $result["data"]['categories'];
 ?>
 
-<section>
+<section id="listCategories">
 
-    <div>
-
+    <div class="listCategories__container container">
 
         <h1>Liste des catégories</h1>
 
@@ -32,15 +31,3 @@ $categories = $result["data"]['categories'];
     </div>
 
 </section>
-
-<script>
-    let topic = document.getElementById("create-topic");
-    topic.style.display = "none";
-    // let btn = document.getElementById("btn-show");
-
-    showTopic() {
-        topic.style.display = "true";
-    }
-
-
-</script>

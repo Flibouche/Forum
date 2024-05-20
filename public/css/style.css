@@ -76,6 +76,10 @@ nav {
     margin-inline: .7rem;
 }
 
+.main {
+    overflow: hidden;
+}
+
 footer {
     background-color: pink;
 }
