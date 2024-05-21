@@ -2,7 +2,7 @@
 
     <div class="login__container container">
 
-        <form action="index.php?ctrl=login" method="POST">
+        <form action="index.php?ctrl=security&action=login" method="POST">
 
             <div class="form__group">
                 <label for="email">Enter your email</label>

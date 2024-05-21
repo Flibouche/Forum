@@ -54,7 +54,7 @@ a {
 }
 
 a:hover {
-    color: var(--skin-color3);
+    color: var(--white-color1);
 }
 
 /*========================== REUSABLE CSS CLASSES ======================*/
@@ -63,7 +63,7 @@ nav {
     display: flex;
     height: 5vh;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background-color: var(--skin-color3);
 }
 

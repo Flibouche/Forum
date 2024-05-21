@@ -7,7 +7,7 @@
     <meta name="description" content="<?= $meta_description ?>">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.tiny.cloud/1/zg3mwraazn1b2ezih16je1tc6z7gwp5yd4pod06ae5uai8pa/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="<?= PUBLIC_DIR ?>/css/style.css">
     <title>GameWorld</title>
 </head>
@@ -22,13 +22,16 @@
             <header>
                 <nav>
                     <div id="nav-left">
-                        <span>Logo</span>
-                        <a href="index.php?ctrl=home">Accueil</a>
+                        <a href="index.php?ctrl=home"><i class="fa-solid fa-gamepad"></i></a>
                         <?php
                         if (App\Session::isAdmin()) {
                         ?>
                             <a href="index.php?ctrl=home&action=users">Voir la liste des gens</a>
                         <?php } ?>
+                    </div>
+                    <div id="nav-center">
+                        <a href="index.php?ctrl=home">Accueil</a>
+                        <a href="index.php?ctrl=forum&action=listCategories">Liste des catégories</a>
                     </div>
                     <div id="nav-right">
                         <?php
@@ -36,13 +39,12 @@
                         if (App\Session::getUser()) {
                         ?>
                             <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
-                            <a href="index.php?ctrl=security&action=logout">Déconnexion</a>
+                            <a href="index.php?ctrl=security&action=logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
                         <?php
                         } else {
                         ?>
-                            <a href="index.php?ctrl=security&action=login">Connexion</a>
-                            <a href="index.php?ctrl=security&action=register">Inscription</a>
-                            <a href="index.php?ctrl=forum&action=listCategories">Liste des catégories</a>
+                            <a href="index.php?ctrl=security&action=login"><i class="fa-solid fa-user"></i></a>
+                            <a href="index.php?ctrl=security&action=register"><i class="fa-solid fa-user-plus"></i></a>
                             <a href="index.php?ctrl=forum&action=listUsers">Liste des utilisateurs</a>
                         <?php
                         }
@@ -52,7 +54,7 @@
             </header>
 
             <main id="forum">
-                    <?= $page ?>
+                <?= $page ?>
             </main>
 
         </div>

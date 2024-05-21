@@ -13,7 +13,9 @@ final class User extends Entity
 
     private $id;
     private $nickName;
+    private $password;
     private $email;
+    private $role;
 
     public function __construct($data)
     {
@@ -47,6 +49,20 @@ final class User extends Entity
         return $this;
     }
 
+    // ******************* Password *******************
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
     // ******************* Email *******************
 
     public function getEmail()
@@ -59,6 +75,28 @@ final class User extends Entity
         $this->email = $email;
 
         return $this;
+    }
+
+    // ******************* Role *******************
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function hasRole($role)
+    {
+        if ($role == "ROLE_ADMIN") {
+            return true;
+        }
+        return false;
     }
 
     // ******************* __toString *******************

@@ -53,22 +53,37 @@ class SecurityController extends AbstractController
 
         if ($email && $password) {
             $user = $userManager->findOneByEmail($email);
+
             if ($user) {
-                Session::addFlash("error", "This pseudo or email is already use !");
+                $hash = $user->getPassword();
+                if (password_verify($password, $hash)) {
+                    $session->setUser($user);
+                    Session::addFlash("success", "You are connected !");
+                    $this->redirectTo("home");
+                }
+            } else {
+                Session::addFlash("error", "The pseudo/password is not correct !");
                 $this->redirectTo("home");
             }
-
-            return [
-                "view" => VIEW_DIR . "security/login.php",
-                "meta_description" => "Login to the forum"
-            ];
         }
+
+        return [
+            "view" => VIEW_DIR . "security/login.php",
+            "meta_description" => "Login to the forum"
+        ];
     }
 
     public function logout()
     {
         unset($_SESSION["user"]);
-        header("location:index.php");
-        exit;
+        $this->redirectTo("home");
+    }
+
+    public function profile()
+    {
+        return [
+            "view" => VIEW_DIR . "security/profile.php",
+            "meta_description" => "Profile"        
+        ];
     }
 }
