@@ -15,7 +15,6 @@ class ForumController extends AbstractController implements ControllerInterface
 
     public function index()
     {
-
         // créer une nouvelle instance de CategoryManager
         $categoryManager = new CategoryManager();
         // récupérer la liste de toutes les catégories grâce à la méthode findAll de Manager.php (triés par nom)
@@ -97,5 +96,34 @@ class ForumController extends AbstractController implements ControllerInterface
                 "posts" => $posts
             ]
         ];
+    }
+
+    public function addPost($id)
+    {
+        $postManager = new PostManager();
+
+        // Si l'utilisateur est connecté
+        if (\App\Session::getUser()) {
+            // Récupération de l'ID de l'utilisateur connecté (pour l'affecter au post crée)
+            $user = $_SESSION['user']->getId();
+
+            // Si on soumet le formulaire
+            if (isset($_POST['submit'])) {
+                // On vérifie que les données existent et qu'elles sont valides
+                if (isset($_POST['content']) && (!empty($_POST['content']))) {
+                    $text = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    // if (Session::getTokenCSRF() =/= $_POST['csrfToken']) {
+                    // $this->redirectTo("security, "logOut");
+                    // }
+                    // Si le filtre passe
+                    if ($text) {
+                        // Ajout du post en BDD + message de confirmation
+                        $postManager->add(["topic_id" => $id, "user_id" => $user, "content" => $text]);
+                        Session::addFlash("success", "Post added successfully !");
+                        $this->redirectTo("forum", "listPosts", $id);
+                    }
+                }
+            }
+        }
     }
 }

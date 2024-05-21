@@ -2,7 +2,15 @@
 $user = $result["data"]['user'];
 ?>
 
-<h1>Liste des information de l'utilisateur</h1>
+<section id="displayUser">
 
-    <p><?= $user->getNickName() ?></p>
-    <p><?= $user->getEmail() ?></p>
+    <div class="displayUser__container container">
+
+        <h1>List of user informations</h1>
+
+        <p><?= $user->getNickName() ?></p>
+        <p><?= $user->getEmail() ?></p>
+
+    </div>
+
+</section>

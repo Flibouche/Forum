@@ -71,6 +71,12 @@ nav {
     min-height: 100vh;
 }
 
+#forum {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+}
+
 .container {
     width: clamp(330px, 80vw, 954px);
     margin-inline: .7rem;

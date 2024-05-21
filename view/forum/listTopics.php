@@ -7,7 +7,7 @@ $topics = $result["data"]['topics'];
 
     <div class="listTopics__container container">
 
-        <h1>Liste des topics de <?= $category ?></h1>
+        <h1>Topics' list of <?= $category ?></h1>
 
         <table>
             <thead>
