@@ -36,6 +36,19 @@ $topics = $result["data"]['topics'];
         <p>There's no topic in this category.</p>
     <?php } ?>
 
+    <form action="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>&action=addTopic" method="POST" id="create-topic">
+        <div class="form__group">
+            <label for="title">Enter a title for the topic</label>
+            <input type="title" name="title" id="title" aria-label="Topic's Title" placeholder="Enter title">
+        </div>
+
+        <div class="form__group">
+            <textarea id="content" name="content" class="post" placeholder="Add message"></textarea>
+        </div>
+
+        <button id="btn-add" type="submit" name="submit" value="Add topic" aria-label="Add topic">Add topic</button>
+    </form>
+
     </div>
 
 </section>
