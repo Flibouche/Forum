@@ -2,7 +2,7 @@
 
     <div class="register__container container">
 
-        <form action="index.php?ctrl=register" method="POST">
+        <form action="index.php?ctrl=security&action=register" method="POST">
 
             <div class="form__group">
                 <label for="nickName">nickName</label>

@@ -142,14 +142,25 @@ class ForumController extends AbstractController implements ControllerInterface
 
         if (isset($_POST['submit'])) {
             if (isset($_POST['title']) && (!empty($_POST['title']))) {
-                
+
                 $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                
+
                 if ($title) {
-                    // var_dump("ok");die;
-                    $topicManager->add(["category_id" => $id, "user_id" => 1, "title" => "title"]);
-                    Session::addFlash("success", "Topic added successfully !");
-                    $this->redirectTo("forum", "listTopic", $id);
+                    $idTopic = $topicManager->add(["category_id" => $id, "user_id" => 1, "title" => $title]);
+
+                    if (isset($_POST['content']) && (!empty($_POST['content']))) {
+
+                        $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+                        if ($content) {
+                            $postManager->add(["topic_id" => $idTopic, "user_id" => 1, "content" => $content]);
+                            Session::addFlash("success", "Topic added successfully !");
+                            $this->redirectTo("forum", "listTopic", $id);
+                        }
+                    }
+                } else {
+                    Session::addFlash("error", "Please enter a post");
+                    $this->redirectTo("forum", "listTopic");
                 }
             }
         }

@@ -17,21 +17,16 @@ class UserManager extends Manager
         parent::connect();
     }
 
-    public function register($data)
+    public function findOneByEmail($email)
     {
-        $keys = array_keys($data);
 
-        $values = array_values($data);
+        $sql = "SELECT * 
+                FROM " . $this->tableName . " u 
+                WHERE u.email = :email";
 
-        $sql = "INSERT INTO " . $this->tableName . "
-                (" . implode(',', $keys) . ") 
-                VALUES
-                ('" . implode("','", $values) . "')";
-        try {
-            return DAO::insert($sql);
-        } catch (\PDOException $e) {
-            echo $e->getMessage();
-            die();
-        }
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['email' => $email], false),
+            $this->className
+        );
     }
 }
