@@ -16,4 +16,16 @@ class CategoryManager extends Manager
     {
         parent::connect();
     }
+
+    public function findCategoryByName($name)
+    {
+        $sql = "SELECT * 
+                FROM " . $this->tableName . " c
+                WHERE c.name = :name";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['name' => $name], false),
+            $this->className
+        );
+    }
 }

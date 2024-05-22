@@ -16,6 +16,7 @@ $topics = $result["data"]['topics'];
                     <th scope="col">AUTHOR</th>
                     <th scope="col">NB MESSAGES</th>
                     <th scope="col">LAST MESSAGE</th>
+                    <th scope="col">DELETE</th>
                 </tr>
             </thead>
             <?php
@@ -27,6 +28,7 @@ $topics = $result["data"]['topics'];
                             <td>by <?= $topic->getUser() ?></td>
                             <td>150</td>
                             <td>Last message</td>
+                            <td><a href="index.php?ctrl=forum&action=deleteTopic&id=<?= $topic->getId() ?>"><i class="fa-solid fa-delete-left"></i></a></td>
                     </tr>
                 </tbody>
             <?php } ?>

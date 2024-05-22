@@ -36,6 +36,7 @@ class SecurityController extends AbstractController
                 } else if ($verifyEmail) {
                     Session::addFlash("error", "This pseudo or email is already use !");
                     $this->redirectTo("home");
+                    
                 } else {
                     if ($pass1 == $pass2 && strlen($pass1) >= 5) {
                         $userManager->add(["nickName" => $nickName, "password" => password_hash($pass1, PASSWORD_DEFAULT), "email" => $email, "role" => "ROLE_USER"]);
