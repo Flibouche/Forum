@@ -16,15 +16,17 @@ $posts = $result["data"]['posts'];
             <br>
         <?php } ?>
 
-        <form action="index.php?ctrl=forum&action=addPost&id=<?= $topic->getId() ?>" method="POST" id="add-message">
+        <?php if (isset($_SESSION['user'])) { ?>
+            <form action="index.php?ctrl=forum&action=addPost&id=<?= $topic->getId() ?>" method="POST" id="add-message">
 
-            <div class="form__group">
-                <textarea id="content" name="content" class="post" placeholder="Add message"></textarea>
-            </div>
+                <div class="form__group">
+                    <textarea id="content" name="content" class="post" placeholder="Add message"></textarea>
+                </div>
 
-            <button id="btn-add" type="submit" name="submit" value="Add message" aria-label="Add message">Add message</button>
+                <button id="btn-add" type="submit" name="submit" value="Add message" aria-label="Add message">Add message</button>
 
-        </form>
+            </form>
+        <?php } ?>
 
     </div>
 

@@ -10,19 +10,27 @@ $categories = $result["data"]['categories'];
 
         <?php
         foreach ($categories as $category) { ?>
-            <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a></p>
+            <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a>
+                <?php if (isset($_SESSION['user'])) { ?>
+                    <a href="index.php?ctrl=forum&action=deleteCategory&id=<?= $category->getId() ?>"><i class="fa-solid fa-delete-left"></i></a>
+                <?php } ?>
+            </p>
         <?php } ?>
 
-        <form action="index.php?ctrl=forum&action=addCategory" method="POST" id="add-category">
+        <?php if (isset($_SESSION['user'])) { ?>
 
-            <div class="form__group">
-                <label for="name">Enter a category name</label>
-                <input type="name" name="name" id="name" aria-label="Category's Name" placeholder="Enter Name">
-            </div>
+            <form action="index.php?ctrl=forum&action=addCategory" method="POST" id="add-category">
 
-            <button id="btn-add" type="submit" name="submit" value="Add category" aria-label="Add category">Add category</button>
+                <div class="form__group">
+                    <label for="name">Enter a category name</label>
+                    <input type="name" name="name" id="name" aria-label="Category's Name" placeholder="Enter Name">
+                </div>
 
-        </form>
+                <button id="btn-add" type="submit" name="submit" value="Add category" aria-label="Add category">Add category</button>
+
+            </form>
+
+        <?php } ?>
 
     </div>
 

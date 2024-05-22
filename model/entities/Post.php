@@ -8,9 +8,10 @@ final class Post extends Entity
 {
 
     private $id;
-    private $user;
     private $content;
     private $publicationDate;
+    private $user;
+    private $topic;
 
     public function __construct($data)
     {
@@ -29,20 +30,7 @@ final class Post extends Entity
         $this->id = $id;
         return $this;
     }
-
-    // ******************* User *******************
-
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    public function setUser($user)
-    {
-        $this->user = $user;
-        return $this;
-    }
-
+    
     // ******************* Content *******************
 
     public function getContent()
@@ -57,7 +45,7 @@ final class Post extends Entity
     }
 
     // ******************* Publication Date *******************
-
+    
     public function getPublicationDate()
     {
         return $this->publicationDate;
@@ -69,10 +57,38 @@ final class Post extends Entity
         return $this;
     }
 
+    // ******************* User *******************
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+        return $this;
+    }
+    
+    // ******************* Topic *******************
+
+    public function getTopic()
+    {
+        return $this->topic;
+    }
+
+    public function setTopic($topic)
+    {
+        $this->topic = $topic;
+
+        return $this;
+    }
+
     // ******************* __toString *******************
 
     public function __toString()
     {
         return $this->content;
     }
+
 }

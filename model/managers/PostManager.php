@@ -42,4 +42,18 @@ class PostManager extends Manager
             $this->className
         );
     }
+
+    public function countPostsByTopic($id)
+    {
+
+        $sql = "SELECT COUNT(*) as post_count
+        FROM " . $this->tableName . " p
+        WHERE p.topic_id = :id
+        ";
+
+        return $this->getMultipleResults(
+            DAO::select($sql, ['id' => $id]),
+            $this->className
+        );
+    }
 }

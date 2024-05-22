@@ -13,10 +13,10 @@ final class Topic extends Entity
 
     private $id;
     private $title;
-    private $user;
-    private $category;
     private $creationDate;
     private $closed;
+    private $category;
+    private $user;
 
     public function __construct($data)
     {

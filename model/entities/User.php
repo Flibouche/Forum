@@ -93,7 +93,7 @@ final class User extends Entity
 
     public function hasRole($role)
     {
-        if ($this->getRole() === $role) {
+        if (in_array( $role, json_decode($this->getRole()))) {
             return true;
         }
         return false;

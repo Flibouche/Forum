@@ -8,8 +8,8 @@
     /*========== Colors ==========*/
     --white-color1: #fbf5ef;
     --yellow-color2: #f2d3ab;
-    --skin-color3: #c69fa5;
-    --purple-color4: #8b6d9c;
+    --skin-color3: #c8abaf;
+    --purple-color4: #5e3f70;
     --blue-color5: #494d7e;
     --darkblue-color6: #272744;
 
@@ -82,10 +82,28 @@ nav {
     margin-inline: .7rem;
 }
 
+.grid {
+    display: grid;
+    /* gap: 1.5rem; */
+}
+
 .main {
     overflow: hidden;
 }
 
 footer {
     background-color: pink;
+}
+
+/*========================== List Categories ======================*/
+.listTopics__container {
+    justify-content: center;
+}
+
+.listTopics__container h1 {
+    text-align: left;
+}
+
+.listTopics__container thead {
+    background-color: var(--purple-color4);
 }

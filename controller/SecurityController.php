@@ -29,18 +29,16 @@ class SecurityController extends AbstractController
                 $verifyNickName = $userManager->findOneByNickName($nickName);
                 $verifyEmail = $userManager->findOneByEmail($email);
 
-                if ($verifyNickName) {
-                    Session::addFlash("error", "This pseudo or email is already use !");
+                if ($verifyNickName || $verifyEmail) {
+                    Session::addFlash("error", "This pseudo or email is already in use!");
                     $this->redirectTo("home");
-
-                } else if ($verifyEmail) {
-                    Session::addFlash("error", "This pseudo or email is already use !");
-                    $this->redirectTo("home");
-                    
                 } else {
                     if ($pass1 == $pass2 && strlen($pass1) >= 5) {
                         $userManager->add(["nickName" => $nickName, "password" => password_hash($pass1, PASSWORD_DEFAULT), "email" => $email, "role" => "ROLE_USER"]);
                         Session::addFlash("success", "Registered successfully !");
+                        $this->redirectTo("home");
+                    } else {
+                        Session::addFlash("error", "Password should be at least 5 characters long and match !");
                         $this->redirectTo("home");
                     }
                 }
