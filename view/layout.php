@@ -15,27 +15,43 @@
 <body>
     <div id="wrapper">
         <div id="mainpage">
-            <!-- c'est ici que les messages (erreur ou succès) s'affichent-->
+            <!-- C'est ici que les messages (erreur ou succès) s'affichent -->
             <h3 class="message" style="color: red"><?= App\Session::getFlash("error") ?></h3>
             <h3 class="message" style="color: green"><?= App\Session::getFlash("success") ?></h3>
 
             <header>
                 <nav>
-                    <div id="nav-left">
-                        <a href="index.php?ctrl=home"><i class="fa-solid fa-gamepad"></i></a>
-                        <?php
-                        if (App\Session::isAdmin()) {
-                        ?>
-                            <a href="index.php?ctrl=home&action=users">Voir la liste des gens</a>
-                        <?php } ?>
+
+                    <a href="index.php?ctrl=home" class="nav__logo" aria-label="Logo GameWorld"><i class="fa-solid fa-gamepad"></i></a>
+
+                    <div id="nav-menu" class="nav__menu" aria-label="Main Navigation">
+                        <ul class="nav__list">
+
+                            <li class="nav__item">
+                                <a href="index.php?ctrl=home">Home</a>
+                            </li>
+
+                            <li class="nav__item">
+                                <a href="index.php?ctrl=forum&action=listCategories">Categories</a>
+                            </li>
+
+                            <?php
+                            if (App\Session::isAdmin()) {
+                            ?>
+                                <li class="nav__item">
+                                    <a href="index.php?ctrl=home&action=users">See users</a>
+                                </li>
+                            <?php } ?>
+                        </ul>
+
+                        <div class="nav__close" id="nav-close">
+                            <i class="fa-solid fa-xmark" aria-label="Close Navigation"></i>
+                        </div>
+
                     </div>
-                    <div id="nav-center">
-                        <a href="index.php?ctrl=home">Accueil</a>
-                        <a href="index.php?ctrl=forum&action=listCategories">Liste des catégories</a>
-                    </div>
-                    <div id="nav-right">
+                    <div class="nav__actions">
                         <?php
-                        // si l'utilisateur est connecté 
+                        // Si l'utilisateur est connecté 
                         if (App\Session::getUser()) {
                         ?>
                             <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
@@ -45,10 +61,16 @@
                         ?>
                             <a href="index.php?ctrl=security&action=login"><i class="fa-solid fa-user"></i></a>
                             <a href="index.php?ctrl=security&action=register"><i class="fa-solid fa-user-plus"></i></a>
-                            <a href="index.php?ctrl=forum&action=listUsers">Liste des utilisateurs</a>
+                            <!-- <a href="index.php?ctrl=forum&action=listUsers">Liste des utilisateurs</a> -->
                         <?php
                         }
                         ?>
+
+                        <!-- Toggle Button -->
+                        <div class="nav__toggle" id="nav-toggle" aria-label="Toggle Navigation">
+                            <i class="fa-solid fa-bars" aria-label="Toggle Navigation"></i>
+                        </div>
+                        
                     </div>
                 </nav>
             </header>
