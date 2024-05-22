@@ -60,7 +60,8 @@
         </div>
 
         <footer>
-            <p>&copy; <?= date_create("now")->format("Y") ?> - <a href="#">Règlement du forum</a> - <a href="#">Mentions légales</a></p>
+            <p><a href="#">Règlement du forum</a> - <a href="#">Mentions légales</a> - <a href="#">Contact</a> - <a href="#">Need help ?</a></p>
+            <p>&copy; Flibouche <?= date_create("now")->format("Y") ?></p>
         </footer>
 
     </div>

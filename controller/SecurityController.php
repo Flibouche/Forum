@@ -14,25 +14,34 @@ class SecurityController extends AbstractController
 
     public function register()
     {
-        $session = new Session();
+
         $userManager = new UserManager();
 
-        $nickName = filter_input(INPUT_POST, "nickName", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
-        $pass1 = filter_input(INPUT_POST, "pass1", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pass2 = filter_input(INPUT_POST, "pass2", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (isset($_POST['submit'])) {
 
-        if ($nickName && $email && $pass1 & $pass2) {
-            $user = $userManager->findOneByEmail($email);
+            $nickName = filter_input(INPUT_POST, "nickName", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $nickName = ucfirst($nickName);
+            $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
+            $pass1 = filter_input(INPUT_POST, "pass1", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $pass2 = filter_input(INPUT_POST, "pass2", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            if ($user) {
-                Session::addFlash("error", "This pseudo or email is already use !");
-                $this->redirectTo("home");
-            } else {
-                if ($pass1 == $pass2 && strlen($pass1) >= 5) {
-                    $userManager->add(["nickName" => $nickName, "password" => password_hash($pass1, PASSWORD_DEFAULT), "email" => $email, "role" => "ROLE_USER"]);
-                    Session::addFlash("success", "Registered successfully !");
+            if ($nickName && $email && $pass1 & $pass2) {
+                $verifyNickName = $userManager->findOneByNickName($nickName);
+                $verifyEmail = $userManager->findOneByEmail($email);
+
+                if ($verifyNickName) {
+                    Session::addFlash("error", "This pseudo or email is already use !");
                     $this->redirectTo("home");
+
+                } else if ($verifyEmail) {
+                    Session::addFlash("error", "This pseudo or email is already use !");
+                    $this->redirectTo("home");
+                } else {
+                    if ($pass1 == $pass2 && strlen($pass1) >= 5) {
+                        $userManager->add(["nickName" => $nickName, "password" => password_hash($pass1, PASSWORD_DEFAULT), "email" => $email, "role" => "ROLE_USER"]);
+                        Session::addFlash("success", "Registered successfully !");
+                        $this->redirectTo("home");
+                    }
                 }
             }
         }
@@ -48,22 +57,25 @@ class SecurityController extends AbstractController
         $session = new Session();
         $userManager = new UserManager();
 
-        $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
-        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (isset($_POST['submit'])) {
 
-        if ($email && $password) {
-            $user = $userManager->findOneByEmail($email);
+            $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
+            $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            if ($user) {
-                $hash = $user->getPassword();
-                if (password_verify($password, $hash)) {
-                    $session->setUser($user);
-                    Session::addFlash("success", "You are connected !");
+            if ($email && $password) {
+                $user = $userManager->findOneByEmail($email);
+
+                if ($user) {
+                    $hash = $user->getPassword();
+                    if (password_verify($password, $hash)) {
+                        $session->setUser($user);
+                        Session::addFlash("success", "You are connected !");
+                        $this->redirectTo("home");
+                    }
+                } else {
+                    Session::addFlash("error", "The pseudo/password is not correct !");
                     $this->redirectTo("home");
                 }
-            } else {
-                Session::addFlash("error", "The pseudo/password is not correct !");
-                $this->redirectTo("home");
             }
         }
 
@@ -83,7 +95,7 @@ class SecurityController extends AbstractController
     {
         return [
             "view" => VIEW_DIR . "security/profile.php",
-            "meta_description" => "Profile"        
+            "meta_description" => "Profile"
         ];
     }
 }

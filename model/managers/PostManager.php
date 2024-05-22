@@ -29,4 +29,17 @@ class PostManager extends Manager
             $this->className
         );
     }
+
+    public function findOneByContent($content)
+    {
+
+        $sql = "SELECT * 
+                FROM " . $this->tableName . " p
+                WHERE p.content = :content";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['content' => $content], false),
+            $this->className
+        );
+    }
 }

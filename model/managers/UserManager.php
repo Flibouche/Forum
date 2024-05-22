@@ -17,6 +17,18 @@ class UserManager extends Manager
         parent::connect();
     }
 
+    public function findOneByNickName($nickName)
+    {
+        $sql = "SELECT * 
+        FROM " . $this->tableName . " u 
+        WHERE u.nickName = :nickName";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['nickName' => $nickName], false),
+            $this->className
+        );
+    }
+
     public function findOneByEmail($email)
     {
 

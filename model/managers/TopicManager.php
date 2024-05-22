@@ -31,4 +31,16 @@ class TopicManager extends Manager
             $this->className
         );
     }
+
+    public function findTopicByTitle($title)
+    {
+        $sql = "SELECT * 
+                FROM " . $this->tableName . " t
+                WHERE t.title = :title";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['title' => $title], false),
+            $this->className
+        );
+    }
 }

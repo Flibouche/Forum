@@ -93,7 +93,7 @@ final class User extends Entity
 
     public function hasRole($role)
     {
-        if ($role == "ROLE_ADMIN") {
+        if ($this->getRole() === $role) {
             return true;
         }
         return false;

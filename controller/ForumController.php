@@ -144,6 +144,7 @@ class ForumController extends AbstractController implements ControllerInterface
             if (isset($_POST['title']) && (!empty($_POST['title']))) {
 
                 $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $title = ucfirst($title);
 
                 if ($title) {
                     $idTopic = $topicManager->add(["category_id" => $id, "user_id" => 1, "title" => $title]);
