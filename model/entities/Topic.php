@@ -17,6 +17,7 @@ final class Topic extends Entity
     private $closed;
     private $category;
     private $user;
+    private $nbPosts;
 
     public function __construct($data)
     {
@@ -62,10 +63,25 @@ final class Topic extends Entity
         return $this;
     }
 
+    // ******************* NB Posts *******************
+
+    public function getNbPosts()
+    {
+        return $this->nbPosts;
+    }
+
+    public function setNbPosts($nbPosts)
+    {
+        $this->nbPosts = $nbPosts;
+
+        return $this;
+    }
+
     // ******************* __toString *******************
 
     public function __toString()
     {
         return $this->title;
     }
+
 }

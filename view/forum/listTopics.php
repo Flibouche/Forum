@@ -29,7 +29,7 @@ $topics = $result["data"]['topics'];
                             foreach ($topics as $topic) { ?>
                             <th scope="row"><a href="index.php?ctrl=forum&action=listPosts&id=<?= $topic->getId() ?>"><?= $topic ?></a></th>
                             <td>by <?= $topic->getUser() ?></td>
-                            <td></td>
+                            <td><?= $topic->getNbPosts() ?></td>
                             <td>Last message</td>
                             <?php if (App\Session::isAdmin()) { ?>
                                 <td><a href="index.php?ctrl=forum&action=deleteTopic&id=<?= $topic->getId() ?>"><i class="fa-solid fa-delete-left"></i></a></td>

@@ -43,4 +43,17 @@ class TopicManager extends Manager
             $this->className
         );
     }
+
+    public function findPostsByTopics()
+    {
+        $sql = "SELECT t.title, t.id_topic, COUNT(p.id_post) AS nbPosts
+                FROM topic t
+                LEFT JOIN post p ON t.id_topic = p.topic_id
+                GROUP BY t.id_topic";
+
+        return $this->getMultipleResults(
+            DAO::select($sql),
+            $this->className
+        );
+    }
 }
