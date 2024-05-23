@@ -16,7 +16,7 @@ $user = $result["data"]['user'];
 
             <div class="form__group">
                 <label for="file" aria-label="Upload profile picture">Profile picture upload :</label>
-                <input type="file" name="file">
+                <input type="file" name="file" accept=".jpg, .png, .jpeg, .webp" />
             </div>
 
             <button id="btn-add" type="submit" name="submit" value="Upload profile picture" aria-label="Upload profile picture">Upload profile picture</button>

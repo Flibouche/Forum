@@ -25,7 +25,7 @@ class SecurityController extends AbstractController
             $pass1 = filter_input(INPUT_POST, "pass1", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $pass2 = filter_input(INPUT_POST, "pass2", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $profilePicture = "/public/uploads/profilePictures/default.webp";
+            $profilePicture = "./public/uploads/profilePictures/default.webp";
 
             if ($nickName && $email && $pass1 & $pass2) {
                 $verifyNickName = $userManager->findOneByNickName($nickName);
@@ -92,14 +92,13 @@ class SecurityController extends AbstractController
         $this->redirectTo("home");
     }
 
-    public function profile($id)
+    public function profile()
     {
-        $userManager = new UserManager();
-        $user = $userManager->findOneById($id);
+        $user = Session::getUser();
 
         return [
             "view" => VIEW_DIR . "security/profile.php",
-            "meta_description" => "Profile",
+            "meta_description" => "Profile of " . $user,
             "data" => [
                 // Les utilisateurs récupérés, passés à la vue
                 "user" => $user
@@ -109,62 +108,101 @@ class SecurityController extends AbstractController
 
     public function uploadProfilePicture($id)
     {
+        // Initialisation du gestionnaire d'utilisateurs
         $userManager = new UserManager();
+
+        // Récupération de l'utilisateur correspondant à l'ID fourni
         $user = $userManager->findOneById($id);
+
+        // Récupération du chemin de l'image de profil actuelle de l'utilisateur
         $userProfilePicture = $user->getProfilePicture();
+
+        // Chemin de l'image par défaut
         $defaultAvatar = "./public/uploads/profilePictures/default.webp";
 
+        // Vérification si le formulaire a été soumis
         if (isset($_POST['submit'])) {
+            // Vérification si un fichier a été téléchargé
             if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
+                // Récupération des informations sur le fichier téléchargé
                 $tmpName = $_FILES['file']['tmp_name'];
                 $name = $_FILES['file']['name'];
                 $size = $_FILES['file']['size'];
                 $error = $_FILES['file']['error'];
                 $type = $_FILES['file']['type'];
 
+                // Extraction de l'extension du fichier
                 $tabExtension = explode('.', $name);
-
                 $extension = strtolower(end($tabExtension));
 
+                // Extensions autorisées
                 $allowedExtensions = ['jpg', 'png', 'jpeg', 'webp'];
 
+                // Taille maximale autorisée
                 $maxSize = 10000000;
 
+                // Génération d'un nom unique pour le fichier
                 $uniqueName = uniqid('', true);
 
+                // Vérification de la taille du fichier
                 if ($size >= $maxSize) {
+                    // Affichage d'un message d'erreur
                     Session::addFlash("error", "Problem with size image !");
+                    // Redirection vers la page de profil
                     $this->redirectTo("security", "profile");
-                } else if ($error > 0) {
-                    Session::addFlash("error", "Error upload file !");
+                } elseif ($error > 0) {
+                    Session::addFlash("error", "Error on the upload file !");
                     $this->redirectTo("security", "profile");
                 } elseif (!in_array($extension, $allowedExtensions)) {
-                    Session::addFlash("error", "Incorrect file extension!");
+                    Session::addFlash("error", "Incorrect file extension !");
                     $this->redirectTo("security", "profile");
-                } else {
-                    if (isset($userProfilePicture) && $userProfilePicture !== $defaultAvatar) {
-                        unlink($userProfilePicture);
-                    }
-
-                    $file = $uniqueName . '.' . $extension;
-                    move_uploaded_file($tmpName, './public/uploads/profilePictures/' . $file);
-
-                    $profilePicture = imagecreatefromstring(file_get_contents('./public/uploads/profilePictures/' . $file));
-                    $webpPath = "./public/uploads/profilePictures/" . $uniqueName . ".webp";
-                    imagewebp($profilePicture, $webpPath);
-                    unlink('./public/uploads/profilePictures/' . $file);
-
-                    $pathFile = $webpPath;
-
-                    $data = [
-                        "profilePicture" => $pathFile
-                    ];
-
-                    $userManager->update($data, $id);
-
-                    Session::addFlash("success", "Test !");
-                    $this->redirectTo("home");
                 }
+
+                if ($userProfilePicture !== $defaultAvatar) {
+                    unlink($userProfilePicture);
+                }
+
+                // Déplacement du fichier téléchargé vers le dossier des images de profil
+                $file = $uniqueName . '.' . $extension;
+                move_uploaded_file($tmpName, './public/uploads/profilePictures/' . $file);
+
+                // Création de l'image à partir du fichier
+                $profilePicture = imagecreatefromstring(file_get_contents('./public/uploads/profilePictures/' . $file));
+
+                // Chemin pour l'image au format webp
+                $webpPath = "./public/uploads/profilePictures/" . $uniqueName . ".webp";
+
+                // Conversion de l'image en format webp
+                imagewebp($profilePicture, $webpPath);
+
+                // Suppression de l'image JPG ou PNG téléchargée (en amont, elle a été convertie en webp)
+                unlink('./public/uploads/profilePictures/' . $file);
+
+                // Chemin du fichier pour la base de données
+                $pathFile = $webpPath;
+
+                // Données à mettre à jour dans la base de données
+                $data = [
+                    "profilePicture" => $pathFile
+                ];
+
+                // Mise à jour des données utilisateur dans la base de données
+                $userManager->update($data, $id);
+
+                // Suppression de l'utilisateur de la session
+                unset($_SESSION["user"]);
+
+                // Récupération des données de l'utilisateur mise à jour
+                $user = $userManager->findOneById($id);
+
+                // Mise à jour de la session avec les nouvelles données de l'utilisateur
+                Session::setUser($user);
+
+                // Affichage d'un message de succès
+                Session::addFlash("success", "Test !");
+
+                // Redirection vers la page de profil
+                $this->redirectTo("security", "profile");
             }
         }
     }

@@ -22,13 +22,13 @@
             <header>
                 <nav>
 
-                    <a href="index.php?ctrl=home" class="nav__logo" aria-label="Logo GameWorld"><i class="fa-solid fa-gamepad"></i></a>
+                    <a href="index.php?ctrl=home&action=index" class="nav__logo" aria-label="Logo GameWorld"><i class="fa-solid fa-gamepad"></i></a>
 
                     <div id="nav-menu" class="nav__menu" aria-label="Main Navigation">
                         <ul class="nav__list">
 
                             <li class="nav__item">
-                                <a href="index.php?ctrl=home">Home</a>
+                                <a href="index.php?ctrl=home&action=index">Home</a>
                             </li>
 
                             <li class="nav__item">
@@ -42,7 +42,7 @@
                                     <a href="index.php?ctrl=home&action=users">See users</a>
                                 </li>
                                 <li class="nav__item">
-                                    <a href="index.php?ctrl=forum&action=listUsers">Liste des utilisateurs</a>
+                                    <a href="index.php?ctrl=user&action=listUsers">Liste des utilisateurs</a>
                                 </li>
                             <?php } ?>
                         </ul>
@@ -56,8 +56,9 @@
                         <?php
                         // Si l'utilisateur est connecté 
                         if (App\Session::getUser()) {
+                            $user = App\Session::getUser()->getId();
                         ?>
-                            <a href="index.php?ctrl=security&action=profile&id=<?= App\Session::getUser()->getId() ?>"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
+                            <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
                             <a href="index.php?ctrl=security&action=logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
                         <?php
                         } else {

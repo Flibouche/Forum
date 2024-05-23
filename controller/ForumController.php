@@ -13,6 +13,8 @@ use Model\Managers\UserManager;
 class ForumController extends AbstractController implements ControllerInterface
 {
 
+    // Categories
+
     public function index()
     {
         // créer une nouvelle instance de CategoryManager
@@ -30,6 +32,56 @@ class ForumController extends AbstractController implements ControllerInterface
         ];
     }
 
+    public function addCategory()
+    {
+        $this->restrictTo("ROLE_ADMIN");
+        // Initialisation du gestionnaire de catégories
+        $categoryManager = new CategoryManager();
+
+        // Vérifie si le formulaire a été soumis
+        if (isset($_POST['submit'])) {
+            // Vérifie si le champ 'name' est défini et non vide
+            if (isset($_POST['name']) && (!empty($_POST['name']))) {
+                // Sanitize le nom de la catégorie pour éviter les injections de code
+                $name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $name = ucfirst($name); // Capitalize le nom de la catégorie
+
+                if ($name) {
+                    // Vérifie si la catégorie existe déjà
+                    if ($categoryManager->findCategoryByName($name)) {
+                        // Si la catégorie existe déjà, affiche un message d'erreur et redirige
+                        Session::addFlash("error", "Category name is already taken !");
+                        $this->redirectTo("forum", "listCategories");
+                    } else {
+                        // Si la catégorie n'existe pas encore, ajoute-la
+                        $categoryManager->add(["name" => $name]);
+                        Session::addFlash("success", "Category added successfully !");
+                        $this->redirectTo("forum", "listCategories");
+                    }
+                }
+            }
+        }
+    }
+
+    public function deleteCategory($id)
+    {
+        $this->restrictTo("ROLE_ADMIN");
+
+        $categoryManager = new CategoryManager();
+        $category = $categoryManager->findOneById($id);
+
+        if (!$category) {
+            Session::addFlash("error", "This category doesn't exist !");
+            $this->redirectTo("home", "index");
+        } else {
+            $categoryManager->delete($id);
+            Session::addFlash("success", "Category deleted !");
+            $this->redirectTo("forum", "listCategories");
+        }
+    }
+
+    // Topics
+
     public function listTopicsByCategory($id)
     {
         // Initialisation des gestionnaires de topics et de catégories
@@ -42,11 +94,6 @@ class ForumController extends AbstractController implements ControllerInterface
 
         // Récupération des topics associés à la catégorie
         $topics = $topicManager->findTopicsByCategory($id);
-
-        // Ajouter le nombre de posts pour chaque topic
-        // foreach ($topics as $topic) {
-        //     $topic = $postManager->countPostsByTopic($topic->getId());
-        // }
 
         // Retourne les informations nécessaires pour afficher la vue
         return [
@@ -65,119 +112,6 @@ class ForumController extends AbstractController implements ControllerInterface
                 "topics" => $topics
             ]
         ];
-    }
-
-
-    public function listUsers()
-    {
-        // Initialisation du gestionnaire d'utilisateurs
-        $userManager = new UserManager();
-
-        // Récupération de tous les utilisateurs, triés par nickname de manière décroissante
-        $users = $userManager->findAll(["nickName", "DESC"]);
-
-        // Retourne les informations nécessaires pour afficher la vue
-        return [
-            // Chemin vers le fichier de vue qui affichera les utilisateurs
-            "view" => VIEW_DIR . "forum/listUsers.php",
-
-            // Description meta pour la page, utile pour le SEO
-            "meta_description" => "Liste des utilisateurs",
-
-            // Données à passer à la vue
-            "data" => [
-                // Les utilisateurs récupérés, passés à la vue
-                "users" => $users
-            ]
-        ];
-    }
-
-    public function displayUser($id)
-    {
-        // Initialisation du gestionnaire d'utilisateurs
-        $userManager = new UserManager();
-
-        // Récupération de l'utilisateur correspondant à l'ID fourni
-        $user = $userManager->findOneById($id);
-
-        // Retourne les informations nécessaires pour afficher la vue
-        return [
-            // Chemin vers le fichier de vue qui affichera les informations de l'utilisateur
-            "view" => VIEW_DIR . "forum/displayUser.php",
-
-            // Description meta pour la page, utile pour le SEO
-            "meta_description" => "Information de l'utilisateur : " . $user,
-
-            // Données à passer à la vue
-            "data" => [
-                // L'utilisateur récupéré, passé à la vue
-                "user" => $user
-            ]
-        ];
-    }
-
-    public function listPosts($id)
-    {
-        // Initialisation des gestionnaires de topics et de posts
-        $topicManager = new TopicManager();
-        $postManager = new PostManager();
-
-        // Récupération du topic correspondant à l'ID fourni
-        $topic = $topicManager->findOneById($id);
-
-        // Récupération des posts associés au topic
-        $posts = $postManager->findPostsByTopic($id);
-
-        // Retourne les informations nécessaires pour afficher la vue
-        return [
-            // Chemin vers le fichier de vue qui affichera les posts
-            "view" => VIEW_DIR . "forum/listPosts.php",
-
-            // Description meta pour la page, utile pour le SEO
-            "meta_description" => "Liste des posts du topic",
-
-            // Données à passer à la vue
-            "data" => [
-                // Le topic récupéré, passé à la vue
-                "topic" => $topic,
-
-                // Les posts associés au topic, passés à la vue
-                "posts" => $posts
-            ]
-        ];
-    }
-
-    public function addPost($id)
-    {
-        // Initialisation des gestionnaires de topics et de posts
-        $topicManager = new TopicManager();
-        $postManager = new PostManager();
-
-        // Récupération du topic correspondant à l'ID fourni
-        $topic = $topicManager->findOneById($id);
-
-        if (Session::getUser()) {
-            $user = $_SESSION['user']->getId();
-
-            // Vérification si le formulaire a été soumis
-            if (isset($_POST['submit'])) {
-                // Vérifie que le champ 'content' est défini et non vide
-                if (isset($_POST['content']) && (!empty($_POST['content']))) {
-                    // Sanitize le contenu du post pour éviter les injections de code
-                    $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-                    // Si le contenu est valide, ajoute un nouveau post
-                    if ($content) {
-                        // Ajout du post avec l'ID du topic et un ID utilisateur statique (à remplacer par l'ID réel de l'utilisateur connecté)
-                        $postManager->add(["topic_id" => $id, "user_id" => $user, "content" => $content]);
-
-                        // Ajoute un message de succès et redirige vers la liste des posts du topic
-                        Session::addFlash("success", "Post added successfully !");
-                        $this->redirectTo("forum", "listPosts", $id);
-                    }
-                }
-            }
-        }
     }
 
     public function addTopic($id)
@@ -232,7 +166,7 @@ class ForumController extends AbstractController implements ControllerInterface
     public function deleteTopic($id)
     {
         $this->restrictTo("ROLE_ADMIN");
-        
+
         $topicManager = new TopicManager();
         $topic = $topicManager->findOneById($id);
 
@@ -243,6 +177,76 @@ class ForumController extends AbstractController implements ControllerInterface
             $topicManager->delete($id);
             Session::addFlash("success", "Topic deleted !");
             $this->redirectTo("forum", "listTopic");
+        }
+    }
+
+    // Posts
+
+    public function listPosts($id)
+    {
+        // Initialisation des gestionnaires de topics et de posts
+        $topicManager = new TopicManager();
+        $postManager = new PostManager();
+
+        // Récupération du topic correspondant à l'ID fourni
+        $topic = $topicManager->findOneById($id);
+
+        // Récupération des posts associés au topic
+        $posts = $postManager->findPostsByTopic($id);
+
+        if (!$topic) {
+            $this->redirectTo("home", "index");
+        } else {
+            // Retourne les informations nécessaires pour afficher la vue
+            return [
+                // Chemin vers le fichier de vue qui affichera les posts
+                "view" => VIEW_DIR . "forum/listPosts.php",
+
+                // Description meta pour la page, utile pour le SEO
+                "meta_description" => "Liste des posts du topic",
+
+                // Données à passer à la vue
+                "data" => [
+                    // Le topic récupéré, passé à la vue
+                    "topic" => $topic,
+
+                    // Les posts associés au topic, passés à la vue
+                    "posts" => $posts
+                ]
+            ];
+        }
+    }
+
+    public function addPost($id)
+    {
+        // Initialisation des gestionnaires de topics et de posts
+        $topicManager = new TopicManager();
+        $postManager = new PostManager();
+
+        // Récupération du topic correspondant à l'ID fourni
+        $topic = $topicManager->findOneById($id);
+
+        if (Session::getUser()) {
+            $user = $_SESSION['user']->getId();
+
+            // Vérification si le formulaire a été soumis
+            if (isset($_POST['submit'])) {
+                // Vérifie que le champ 'content' est défini et non vide
+                if (isset($_POST['content']) && (!empty($_POST['content']))) {
+                    // Sanitize le contenu du post pour éviter les injections de code
+                    $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+                    // Si le contenu est valide, ajoute un nouveau post
+                    if ($content) {
+                        // Ajout du post avec l'ID du topic et un ID utilisateur statique (à remplacer par l'ID réel de l'utilisateur connecté)
+                        $postManager->add(["topic_id" => $id, "user_id" => $user, "content" => $content]);
+
+                        // Ajoute un message de succès et redirige vers la liste des posts du topic
+                        Session::addFlash("success", "Post added successfully !");
+                        $this->redirectTo("forum", "listPosts", $id);
+                    }
+                }
+            }
         }
     }
 
@@ -261,52 +265,6 @@ class ForumController extends AbstractController implements ControllerInterface
             $postManager->delete($id);
             Session::addFlash("success", "Post deleted !");
             $this->redirectTo("forum", "listPosts", $postId);
-        }
-    }
-
-    public function addCategory()
-    {
-        $this->restrictTo("ROLE_ADMIN");
-        // Initialisation du gestionnaire de catégories
-        $categoryManager = new CategoryManager();
-
-        // Vérifie si le formulaire a été soumis
-        if (isset($_POST['submit'])) {
-            // Vérifie si le champ 'name' est défini et non vide
-            if (isset($_POST['name']) && (!empty($_POST['name']))) {
-                // Sanitize le nom de la catégorie pour éviter les injections de code
-                $name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                $name = ucfirst($name); // Capitalize le nom de la catégorie
-
-                if ($name) {
-                    // Vérifie si la catégorie existe déjà
-                    if ($categoryManager->findCategoryByName($name)) {
-                        // Si la catégorie existe déjà, affiche un message d'erreur et redirige
-                        Session::addFlash("error", "Category name is already taken !");
-                        $this->redirectTo("forum", "listCategories");
-                    } else {
-                        // Si la catégorie n'existe pas encore, ajoute-la
-                        $categoryManager->add(["name" => $name]);
-                        Session::addFlash("success", "Category added successfully !");
-                        $this->redirectTo("forum", "listCategories");
-                    }
-                }
-            }
-        }
-    }
-
-    public function deleteCategory($id)
-    {
-        $categoryManager = new CategoryManager();
-        $category = $categoryManager->findOneById($id);
-
-        if (!$category) {
-            Session::addFlash("error", "This category doesn't exist !");
-            $this->redirectTo("home", "index");
-        } else {
-            $categoryManager->delete($id);
-            Session::addFlash("success", "Category deleted !");
-            $this->redirectTo("forum", "listCategories");
         }
     }
 }

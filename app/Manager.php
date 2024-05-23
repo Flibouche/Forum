@@ -47,6 +47,17 @@ abstract class Manager
         );
     }
 
+    public function count()
+    {
+
+        $sql = "SELECT id_" . $this->tableName . "
+                FROM " . $this->tableName;
+
+        $nbSql = DAO::select($sql);
+
+        return count($nbSql);
+    }
+
     //$data = ['username' => 'Squalli', 'password' => 'dfsyfshfbzeifbqefbq', 'email' => 'sql@gmail.com'];
 
     public function add($data)
