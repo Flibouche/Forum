@@ -11,7 +11,7 @@ $posts = $result["data"]['posts'];
 
         <?php
         foreach ($posts as $post) { ?>
-            <p><?= $post->getUser() ?> le <?= $post->getPublicationDate() ?> - <a href="index.php?ctrl=forum&action=deletePost&id=<?= $post->getId() ?>"><i class="fa-solid fa-delete-left"></i></a></p>
+            <p><?= $post->getUser() ?> le <?= $post->getPublicationDate() ?><?php if (App\Session::isAdmin()) { ?> - <a href="index.php?ctrl=forum&action=deletePost&id=<?= $post->getId() ?>"><i class="fa-solid fa-delete-left"></i></a> <?php } ?></p>
             <p><?= $post->getContent() ?></p>
             <br>
         <?php } ?>

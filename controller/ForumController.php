@@ -231,6 +231,8 @@ class ForumController extends AbstractController implements ControllerInterface
 
     public function deleteTopic($id)
     {
+        $this->restrictTo("ROLE_ADMIN");
+        
         $topicManager = new TopicManager();
         $topic = $topicManager->findOneById($id);
 
@@ -246,6 +248,8 @@ class ForumController extends AbstractController implements ControllerInterface
 
     public function deletePost($id)
     {
+        $this->restrictTo("ROLE_ADMIN");
+
         $postManager = new PostManager();
         $post = $postManager->findOneById($id);
         $postId = $post->getTopic()->getId();

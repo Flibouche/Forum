@@ -16,6 +16,7 @@ final class User extends Entity
     private $password;
     private $email;
     private $role;
+    private $profilePicture;
 
     public function __construct($data)
     {
@@ -93,10 +94,24 @@ final class User extends Entity
 
     public function hasRole($role)
     {
-        if (in_array( $role, json_decode($this->getRole()))) {
+        if (in_array($role, json_decode($this->getRole()))) {
             return true;
         }
         return false;
+    }
+
+    // ******************* Profile Picture *******************
+
+    public function getProfilePicture()
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture($profilePicture)
+    {
+        $this->profilePicture = $profilePicture;
+
+        return $this;
     }
 
     // ******************* __toString *******************

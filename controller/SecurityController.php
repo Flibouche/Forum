@@ -25,6 +25,8 @@ class SecurityController extends AbstractController
             $pass1 = filter_input(INPUT_POST, "pass1", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $pass2 = filter_input(INPUT_POST, "pass2", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+            $profilePicture = "/public/uploads/profilePictures/default.webp";
+
             if ($nickName && $email && $pass1 & $pass2) {
                 $verifyNickName = $userManager->findOneByNickName($nickName);
                 $verifyEmail = $userManager->findOneByEmail($email);
@@ -34,7 +36,7 @@ class SecurityController extends AbstractController
                     $this->redirectTo("home");
                 } else {
                     if ($pass1 == $pass2 && strlen($pass1) >= 5) {
-                        $userManager->add(["nickName" => $nickName, "password" => password_hash($pass1, PASSWORD_DEFAULT), "email" => $email, "role" => "ROLE_USER"]);
+                        $userManager->add(["nickName" => $nickName, "password" => password_hash($pass1, PASSWORD_DEFAULT), "email" => $email, "role" => '["ROLE_USER"]', "profilePicture" => $profilePicture]);
                         Session::addFlash("success", "Registered successfully !");
                         $this->redirectTo("home");
                     } else {
@@ -90,11 +92,80 @@ class SecurityController extends AbstractController
         $this->redirectTo("home");
     }
 
-    public function profile()
+    public function profile($id)
     {
+        $userManager = new UserManager();
+        $user = $userManager->findOneById($id);
+
         return [
             "view" => VIEW_DIR . "security/profile.php",
-            "meta_description" => "Profile"
+            "meta_description" => "Profile",
+            "data" => [
+                // Les utilisateurs récupérés, passés à la vue
+                "user" => $user
+            ]
         ];
+    }
+
+    public function uploadProfilePicture($id)
+    {
+        $userManager = new UserManager();
+        $user = $userManager->findOneById($id);
+        $userProfilePicture = $user->getProfilePicture();
+        $defaultAvatar = "./public/uploads/profilePictures/default.webp";
+
+        if (isset($_POST['submit'])) {
+            if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
+                $tmpName = $_FILES['file']['tmp_name'];
+                $name = $_FILES['file']['name'];
+                $size = $_FILES['file']['size'];
+                $error = $_FILES['file']['error'];
+                $type = $_FILES['file']['type'];
+
+                $tabExtension = explode('.', $name);
+
+                $extension = strtolower(end($tabExtension));
+
+                $allowedExtensions = ['jpg', 'png', 'jpeg', 'webp'];
+
+                $maxSize = 10000000;
+
+                $uniqueName = uniqid('', true);
+
+                if ($size >= $maxSize) {
+                    Session::addFlash("error", "Problem with size image !");
+                    $this->redirectTo("security", "profile");
+                } else if ($error > 0) {
+                    Session::addFlash("error", "Error upload file !");
+                    $this->redirectTo("security", "profile");
+                } elseif (!in_array($extension, $allowedExtensions)) {
+                    Session::addFlash("error", "Incorrect file extension!");
+                    $this->redirectTo("security", "profile");
+                } else {
+                    if (isset($userProfilePicture) && $userProfilePicture !== $defaultAvatar) {
+                        unlink($userProfilePicture);
+                    }
+
+                    $file = $uniqueName . '.' . $extension;
+                    move_uploaded_file($tmpName, './public/uploads/profilePictures/' . $file);
+
+                    $profilePicture = imagecreatefromstring(file_get_contents('./public/uploads/profilePictures/' . $file));
+                    $webpPath = "./public/uploads/profilePictures/" . $uniqueName . ".webp";
+                    imagewebp($profilePicture, $webpPath);
+                    unlink('./public/uploads/profilePictures/' . $file);
+
+                    $pathFile = $webpPath;
+
+                    $data = [
+                        "profilePicture" => $pathFile
+                    ];
+
+                    $userManager->update($data, $id);
+
+                    Session::addFlash("success", "Test !");
+                    $this->redirectTo("home");
+                }
+            }
+        }
     }
 }

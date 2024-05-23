@@ -41,6 +41,9 @@
                                 <li class="nav__item">
                                     <a href="index.php?ctrl=home&action=users">See users</a>
                                 </li>
+                                <li class="nav__item">
+                                    <a href="index.php?ctrl=forum&action=listUsers">Liste des utilisateurs</a>
+                                </li>
                             <?php } ?>
                         </ul>
 
@@ -54,14 +57,13 @@
                         // Si l'utilisateur est connecté 
                         if (App\Session::getUser()) {
                         ?>
-                            <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
+                            <a href="index.php?ctrl=security&action=profile&id=<?= App\Session::getUser()->getId() ?>"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
                             <a href="index.php?ctrl=security&action=logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
                         <?php
                         } else {
                         ?>
                             <a href="index.php?ctrl=security&action=login"><i class="fa-solid fa-user"></i></a>
                             <a href="index.php?ctrl=security&action=register"><i class="fa-solid fa-user-plus"></i></a>
-                            <!-- <a href="index.php?ctrl=forum&action=listUsers">Liste des utilisateurs</a> -->
                         <?php
                         }
                         ?>
@@ -81,7 +83,7 @@
 
         </div>
 
-        <footer>
+        <footer class="footer__container container">
             <p><a href="#">Règlement du forum</a> - <a href="#">Mentions légales</a> - <a href="#">Contact</a> - <a href="#">Need help ?</a></p>
             <p>&copy; Flibouche <?= date_create("now")->format("Y") ?></p>
         </footer>

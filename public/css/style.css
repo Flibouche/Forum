@@ -40,6 +40,16 @@ html {
 
 body {
     font-family: var(--body-font);
+    min-height: 100vh;
+    display: grid;
+    position: relative;
+    justify-items: center;
+    text-align: center;
+    grid-template-rows: 1fr auto;
+}
+
+section {
+    min-height: 90vh;
 }
 
 h1 {
@@ -62,16 +72,6 @@ a:hover {
 }
 
 /*========================== REUSABLE CSS CLASSES ======================*/
-
-#wrapper {
-    min-height: 100vh;
-}
-
-#forum {
-    display: grid;
-    justify-items: center;
-    text-align: center;
-}
 
 .container {
     width: clamp(330px, 80vw, 954px);
@@ -159,11 +159,12 @@ nav {
     right: 0;
 }
 
-/*=============== FOOTER ===============*/
+/*========================== Footer ======================*/
 
 footer {
+    height: 5vh;
     border-top: var(--primary-color) 1px solid;
-    background-color: var(--background-color);    
+    background-color: var(--background-color);
 }
 
 /*========================== List Categories ======================*/

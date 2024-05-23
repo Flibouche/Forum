@@ -11,7 +11,7 @@ $categories = $result["data"]['categories'];
         <?php
         foreach ($categories as $category) { ?>
             <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a>
-                <?php if (isset($_SESSION['user'])) { ?>
+                <?php if (App\Session::isAdmin()) { ?>
                     <a href="index.php?ctrl=forum&action=deleteCategory&id=<?= $category->getId() ?>"><i class="fa-solid fa-delete-left"></i></a>
                 <?php } ?>
             </p>
