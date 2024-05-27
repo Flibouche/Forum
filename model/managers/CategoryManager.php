@@ -42,4 +42,18 @@ class CategoryManager extends Manager
             $this->className
         );
     }
+
+    public function findNbTopicsByCategory($id)
+    {
+        $sql = "SELECT COUNT(t.id_topic) AS nbTopics
+        FROM category c
+        LEFT JOIN topic t ON c.id_category = t.category_id
+        WHERE c.id_category = :id
+        ";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['id' => $id], false),
+            $this->className
+        );
+    }
 }

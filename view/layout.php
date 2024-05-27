@@ -113,7 +113,7 @@
                     'insertdatetime media table paste code help wordcount'
                 ],
                 toolbar: 'undo redo | formatselect | ' +
-                    'bold italic backcolor | alignleft aligncenter ' +
+                    'bold italic | backcolor alignleft aligncenter ' +
                     'alignright alignjustify | bullist numlist outdent indent | ' +
                     'removeformat | help',
                 content_css: '//www.tiny.cloud/css/codepen.min.css'

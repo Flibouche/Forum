@@ -25,7 +25,8 @@ class TopicManager extends Manager
                 FROM " . $this->tableName . " t
                 INNER JOIN post p ON t.id_topic = p.topic_id 
                 WHERE t.category_id = :id
-                GROUP BY t.id_topic";
+                GROUP BY t.id_topic
+                ";
 
         // la requête renvoie plusieurs enregistrements --> getMultipleResults
         return  $this->getMultipleResults(

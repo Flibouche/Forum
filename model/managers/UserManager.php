@@ -31,7 +31,6 @@ class UserManager extends Manager
 
     public function findOneByEmail($email)
     {
-
         $sql = "SELECT * 
                 FROM " . $this->tableName . " u 
                 WHERE u.email = :email";
@@ -42,11 +41,10 @@ class UserManager extends Manager
         );
     }
 
-    // Find user with nb topics
-    public function findTopicsByUser($id)
+    // Méthode qui permets d'afficher le nombre de topic(s) par utilisateur
+    public function findNbTopicsByUser($id)
     {
-
-        $sql = "SELECT u.id_user, u.nickName, COUNT(t.id_topic) AS nbTopics
+        $sql = "SELECT COUNT(t.id_topic) AS nbTopics
                 FROM user u
                 LEFT JOIN topic t ON u.id_user = t.user_id
                 WHERE u.id_user = :id
@@ -58,33 +56,51 @@ class UserManager extends Manager
         );
     }
 
-    // find users with nb posts
-    public function findPostsByUser()
+    // Méthode qui permets d'afficher le nombre de post(s) par utilisateur
+    public function findNbPostsByUser($id)
     {
-
-        $sql = "SELECT u.id_user, u.nickName, COUNT(p.id_post) AS nbPosts
+        $sql = "SELECT COUNT(p.id_post) AS nbPosts
                 FROM user u
                 LEFT JOIN post p ON u.id_user = p.user_id
-                GROUP BY u.id_user";
+                WHERE u.id_user = :id
+                ";
 
-        return $this->getMultipleResults(
-            DAO::select($sql),
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['id' => $id], false),
             $this->className
         );
     }
 
+    // Méthode qui permets d'afficher le dernier topic d'un utilisateur
+    public function findLastTopic($id)
+    {
+        $sql = "SELECT (t.title) AS lastTopic
+        FROM user u
+        LEFT JOIN topic t ON u.id_user = t.user_id
+        WHERE id_user = :id
+        ORDER BY creationDate DESC
+        LIMIT 1
+        ";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['id' => $id], false),
+            $this->className
+        );
+    }
+
+    // Méthode qui permets d'afficher le dernier post d'un utilisateur
     public function findLastPost($id)
     {
-
-        $sql = "SELECT u.id_user, u.nickName, (p.content) AS lastPost, p.publicationDate
+        $sql = "SELECT (p.content) AS lastPost
                 FROM user u
                 LEFT JOIN post p ON u.id_user = p.user_id
                 WHERE id_user = :id
                 ORDER BY publicationDate DESC
-                LIMIT 1";
+                LIMIT 1
+                ";
 
         return $this->getOneOrNullResult(
-            DAO::select($sql, ['id_user' => $id], false),
+            DAO::select($sql, ['id' => $id], false),
             $this->className
         );
     }

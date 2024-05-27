@@ -12,6 +12,7 @@ final class Post extends Entity
     private $publicationDate;
     private $user;
     private $topic;
+    private $test;
 
     public function __construct($data)
     {

@@ -90,13 +90,11 @@ class ForumController extends AbstractController implements ControllerInterface
 
         // Récupération de la catégorie correspondante à l'ID fourni
         $category = $categoryManager->findOneById($id);
+        $nbTopics = $categoryManager->findNbTopicsByCategory($id);
 
         // Récupération des topics associés à la catégorie
         $topics = $topicManager->findTopicsByCategory($id);
 
-        // Adapter findNbPostsByTopic avec topicsbycategory
-        // $topics = $topicManager->findNbPostsByTopic($id);
-        
         // Retourne les informations nécessaires pour afficher la vue
         return [
             // Chemin vers le fichier de vue qui affichera les topics
@@ -111,55 +109,56 @@ class ForumController extends AbstractController implements ControllerInterface
                 "category" => $category,
 
                 // Les topics associés à la catégorie, passés à la vue
-                "topics" => $topics
+                "topics" => $topics,
+
+                "nbTopics" => $nbTopics
             ]
         ];
     }
 
     public function addTopic($id)
     {
-        // Initialisation des gestionnaires de catégories, de sujets et de messages
-        $categoryManager = new CategoryManager();
+        // Initialisation des gestionnaires de sujets et de messages
         $topicManager = new TopicManager();
         $postManager = new PostManager();
 
-        // Récupération de la catégorie correspondante à l'ID fourni
-        $category = $categoryManager->findOneById($id);
+        if (Session::getUser()) {
+            $user = $_SESSION['user']->getId();
+            // Vérifie si le formulaire a été soumis
+            if (isset($_POST['submit'])) {
 
-        // Vérifie si le formulaire a été soumis
-        if (isset($_POST['submit'])) {
+                // Vérifie si le champ 'title' est défini et non vide
+                if (isset($_POST['title']) && (!empty($_POST['title']))) {
 
-            // Vérifie si le champ 'title' est défini et non vide
-            if (isset($_POST['title']) && (!empty($_POST['title']))) {
+                    // Sanitize et capitaliser le titre
+                    $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $title = ucfirst($title);
 
-                // Sanitize et capitaliser le titre
-                $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                $title = ucfirst($title);
+                    // Si le titre est valide, ajoute un nouveau topic
+                    if ($title) {
+                        // Ajout du topic et récupération de l'ID du nouveau topic
+                        $idTopic = $topicManager->add(["category_id" => $id, "user_id" => $user, "title" => $title]);
 
-                // Si le titre est valide, ajoute un nouveau topic
-                if ($title) {
-                    // Ajout du topic et récupération de l'ID du nouveau topic
-                    $idTopic = $topicManager->add(["category_id" => $id, "user_id" => 1, "title" => $title]);
+                        // Vérifie si le champ 'content' est défini et non vide
+                        if (isset($_POST['content']) && (!empty($_POST['content']))) {
 
-                    // Vérifie si le champ 'content' est défini et non vide
-                    if (isset($_POST['content']) && (!empty($_POST['content']))) {
+                            // Sanitize le contenu
+                            $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-                        // Sanitize le contenu
-                        $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                            // Si le contenu est valide, ajoute un nouveau post associé au topic
+                            if ($content) {
+                                $postManager->add(["topic_id" => $idTopic, "user_id" => $user, "content" => $content]);
 
-                        // Si le contenu est valide, ajoute un nouveau post associé au topic
-                        if ($content) {
-                            $postManager->add(["topic_id" => $idTopic, "user_id" => 1, "content" => $content]);
-
-                            // Ajoute un message de succès et redirige vers la liste des topics de la catégorie
-                            Session::addFlash("success", "Topic added successfully !");
-                            $this->redirectTo("forum", "listTopic", $id);
+                                // Ajoute un message de succès et redirige vers la liste des topics de la catégorie
+                                Session::addFlash("success", "Topic added successfully !");
+                                $this->redirectTo("forum", "listTopic", $id);
+                            }
                         }
+                    } else {
+                        // Si le titre n'est pas valide, ajoute un message d'erreur
+                        Session::addFlash("error", "Please enter a post");
+                        $this->redirectTo("forum", "listTopic");
                     }
-                } else {
-                    // Si le titre n'est pas valide, ajoute un message d'erreur
-                    Session::addFlash("error", "Please enter a post");
-                    $this->redirectTo("forum", "listTopic");
                 }
             }
         }
@@ -221,12 +220,8 @@ class ForumController extends AbstractController implements ControllerInterface
 
     public function addPost($id)
     {
-        // Initialisation des gestionnaires de topics et de posts
-        $topicManager = new TopicManager();
+        // Initialisation des gestionnaires de posts
         $postManager = new PostManager();
-
-        // Récupération du topic correspondant à l'ID fourni
-        $topic = $topicManager->findOneById($id);
 
         if (Session::getUser()) {
             $user = $_SESSION['user']->getId();
@@ -240,7 +235,7 @@ class ForumController extends AbstractController implements ControllerInterface
 
                     // Si le contenu est valide, ajoute un nouveau post
                     if ($content) {
-                        // Ajout du post avec l'ID du topic et un ID utilisateur statique (à remplacer par l'ID réel de l'utilisateur connecté)
+                        // Ajout du post avec l'ID du topic et un ID utilisateur statique
                         $postManager->add(["topic_id" => $id, "user_id" => $user, "content" => $content]);
 
                         // Ajoute un message de succès et redirige vers la liste des posts du topic

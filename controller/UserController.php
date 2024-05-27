@@ -38,10 +38,11 @@ class UserController extends AbstractController implements ControllerInterface
         // Initialisation du gestionnaire d'utilisateurs
         $userManager = new UserManager();
 
-        // Récupération de l'utilisateur correspondant au pseudo fourni
         $user = $userManager->findOneById($id);
-        // $nbTopics = $userManager->findTopicsByUser($id);
-        // $user = $userManager->findOneByNickName($nickName);
+        $topics = $userManager->findNbTopicsByUser($id);
+        $posts = $userManager->findNbPostsByUser($id);
+        $lastTopic = $userManager->findLastTopic($id);
+        $lastPost = $userManager->findLastPost($id);
 
         if (!$user) {
             $this->redirectTo("home", "index");
@@ -57,7 +58,11 @@ class UserController extends AbstractController implements ControllerInterface
                 // Données à passer à la vue
                 "data" => [
                     // L'utilisateur récupéré, passé à la vue
-                    "user" => $user
+                    "user" => $user,
+                    "topics" => $topics,
+                    "posts" => $posts,
+                    "lastTopic" => $lastTopic,
+                    "lastPost" => $lastPost
                 ]
             ];
         }
