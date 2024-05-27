@@ -21,9 +21,11 @@ class TopicManager extends Manager
     public function findTopicsByCategory($id)
     {
 
-        $sql = "SELECT * 
-                FROM " . $this->tableName . " t 
-                WHERE t.category_id = :id";
+        $sql = "SELECT t.*, COUNT(p.id_post) AS nbPosts
+                FROM " . $this->tableName . " t
+                INNER JOIN post p ON t.id_topic = p.topic_id 
+                WHERE t.category_id = :id
+                GROUP BY t.id_topic";
 
         // la requête renvoie plusieurs enregistrements --> getMultipleResults
         return  $this->getMultipleResults(
@@ -40,19 +42,6 @@ class TopicManager extends Manager
 
         return $this->getOneOrNullResult(
             DAO::select($sql, ['title' => $title], false),
-            $this->className
-        );
-    }
-
-    public function findPostsByTopics()
-    {
-        $sql = "SELECT t.title, t.id_topic, COUNT(p.id_post) AS nbPosts
-                FROM topic t
-                LEFT JOIN post p ON t.id_topic = p.topic_id
-                GROUP BY t.id_topic";
-
-        return $this->getMultipleResults(
-            DAO::select($sql),
             $this->className
         );
     }

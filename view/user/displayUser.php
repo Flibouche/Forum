@@ -11,6 +11,8 @@ $user = $result["data"]['user'];
         <p><?= $user->getNickName() ?></p>
         <p><?= $user->getEmail() ?></p>
 
+        <p><?= $user->getNbTopics() ?></p>
+
     </div>
 
 </section>

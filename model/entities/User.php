@@ -16,7 +16,12 @@ final class User extends Entity
     private $password;
     private $email;
     private $role;
+    private $inscriptionDate;
     private $profilePicture;
+    private $nbTopics;
+    private $nbPosts;
+    private $lastTopic;
+    private $lastPost;
 
     public function __construct($data)
     {
@@ -79,7 +84,7 @@ final class User extends Entity
     }
 
     // ******************* Role *******************
-
+    
     public function getRole()
     {
         return $this->role;
@@ -100,8 +105,22 @@ final class User extends Entity
         return false;
     }
 
-    // ******************* Profile Picture *******************
+    // ******************* Role *******************
 
+    public function getInscriptionDate()
+    {
+        return $this->inscriptionDate;
+    }
+
+    public function setInscriptionDate($inscriptionDate)
+    {
+        $this->inscriptionDate = $inscriptionDate;
+
+        return $this;
+    }
+
+    // ******************* Profile Picture *******************
+    
     public function getProfilePicture()
     {
         return $this->profilePicture;
@@ -110,6 +129,62 @@ final class User extends Entity
     public function setProfilePicture($profilePicture)
     {
         $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    // ******************* NB Topics *******************
+    
+    public function getNbTopics()
+    {
+        return $this->nbTopics;
+    }
+
+    public function setNbTopics($nbTopics)
+    {
+        $this->nbTopics = $nbTopics;
+
+        return $this;
+    }
+
+    // ******************* NB Posts *******************
+    
+    public function getNbPosts()
+    {
+        return $this->nbPosts;
+    }
+
+    public function setNbPosts($nbPosts)
+    {
+        $this->nbPosts = $nbPosts;
+
+        return $this;
+    }
+
+    // ******************* Last Topic *******************
+    
+    public function getLastTopic()
+    {
+        return $this->lastTopic;
+    }
+
+    public function setLastTopic($lastTopic)
+    {
+        $this->lastTopic = $lastTopic;
+
+        return $this;
+    }
+    
+    // ******************* Last Post *******************
+
+    public function getLastPost()
+    {
+        return $this->lastPost;
+    }
+
+    public function setLastPost($lastPost)
+    {
+        $this->lastPost = $lastPost;
 
         return $this;
     }

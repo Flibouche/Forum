@@ -90,5 +90,4 @@ final class Post extends Entity
     {
         return $this->content;
     }
-
 }

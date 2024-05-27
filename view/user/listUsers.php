@@ -11,7 +11,7 @@ $users = $result["data"]['users'];
         <?php
         foreach ($users as $user) { 
             ?>
-            <p><a href="index.php?ctrl=user&action=displayUser&id=<?= $user->getNickName() ?>"><?= $user ?></a></p>
+            <p><a href="index.php?ctrl=user&action=displayUser&id=<?= $user->getId() ?>"><?= $user ?></a></p>
         <?php } ?>
 
     </div>

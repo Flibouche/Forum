@@ -14,7 +14,7 @@ final class Topic extends Entity
     private $id;
     private $title;
     private $creationDate;
-    private $closed;
+    private $isLocked;
     private $category;
     private $user;
     private $nbPosts;
@@ -38,7 +38,7 @@ final class Topic extends Entity
     }
 
     // ******************* Title *******************
-
+    
     public function getTitle()
     {
         return $this->title;
@@ -47,6 +47,48 @@ final class Topic extends Entity
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
+    }
+
+    // ******************* Creation Date *******************
+    
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+    
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+    
+    // ******************* Is Locked *******************
+    
+    public function getIsLocked()
+    {
+        return $this->isLocked;
+    }
+
+    public function setIsLocked($isLocked)
+    {
+        $this->isLocked = $isLocked;
+
+        return $this;
+    }
+    
+    // ******************* Category *******************
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
         return $this;
     }
 
@@ -83,5 +125,4 @@ final class Topic extends Entity
     {
         return $this->title;
     }
-
 }

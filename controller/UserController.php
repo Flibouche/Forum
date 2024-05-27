@@ -4,6 +4,7 @@ namespace Controller;
 
 use App\AbstractController;
 use App\ControllerInterface;
+use Model\Managers\PostManager;
 use Model\Managers\UserManager;
 
 class UserController extends AbstractController implements ControllerInterface
@@ -32,13 +33,15 @@ class UserController extends AbstractController implements ControllerInterface
         ];
     }
 
-    public function displayUser($nickName)
+    public function displayUser($id)
     {
         // Initialisation du gestionnaire d'utilisateurs
         $userManager = new UserManager();
 
         // Récupération de l'utilisateur correspondant au pseudo fourni
-        $user = $userManager->findOneByNickName($nickName);
+        $user = $userManager->findOneById($id);
+        // $nbTopics = $userManager->findTopicsByUser($id);
+        // $user = $userManager->findOneByNickName($nickName);
 
         if (!$user) {
             $this->redirectTo("home", "index");
