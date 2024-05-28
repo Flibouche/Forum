@@ -16,7 +16,7 @@ $categories = $result["data"]['categories'];
                 <a href="index.php?ctrl=forum&action=updateCategory&id=<?= $category->getId() ?>">
                     <i class="fa-solid fa-pen"></i>
                 </a>
-                <a href="index.php?ctrl=forum&action=deleteCategory&id=<?= $category->getId() ?>">
+                <a href="index.php?ctrl=forum&action=deleteCategory&id=<?= $category->getId() ?>" class="delete-btn">
                     <i class="fa-solid fa-delete-left"></i>
                 </a>
             <?php } ?>

@@ -18,6 +18,7 @@ final class User extends Entity
     private $role;
     private $inscriptionDate;
     private $profilePicture;
+    private $isBanned;
     private $nbTopics;
     private $nbPosts;
     private $lastTopic;
@@ -129,6 +130,20 @@ final class User extends Entity
     public function setProfilePicture($profilePicture)
     {
         $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    // ******************* Is Banned *******************
+
+    public function getIsBanned()
+    {
+        return $this->isBanned;
+    }
+
+    public function setIsBanned($isBanned)
+    {
+        $this->isBanned = $isBanned;
 
         return $this;
     }

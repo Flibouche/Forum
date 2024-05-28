@@ -276,7 +276,7 @@ class ForumController extends AbstractController implements ControllerInterface
         if (isset($_POST['submit'])) {
             if (isset($_POST['title']) && (!empty($_POST['title']))) {
                 $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                $title = ucfirst($title); // Capitalize le nom de la catégorie
+                $title = ucfirst($title);
 
                 if ($title) {
                     $data = array(
@@ -379,6 +379,31 @@ class ForumController extends AbstractController implements ControllerInterface
             $postManager->delete($id);
             Session::addFlash("success", "Post deleted !");
             $this->redirectTo("forum", "listPosts", $postId);
+        }
+    }
+
+    public function updatePost($id)
+    {
+        $postManager = new PostManager();
+        $post = $postManager->findOneById($id);
+
+        if (Session::getUser()) {
+            $user = $_SESSION['user']->getId();
+
+            if (isset($_POST['submit'])) {
+                if (isset($_POST['content']) && (!empty($_POST['content']))) {
+                    $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+                    if ($content) {
+                        $data = array(
+                            'content' => $content
+                        );
+                        $postManager->update($data, $id);
+                        Session::addFlash("success", "Post updated successfully !");
+                        $this->redirectTo("forum", "listPosts");
+                    }
+                }
+            }
         }
     }
 }

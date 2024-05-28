@@ -39,7 +39,7 @@
                             if (App\Session::isAdmin()) {
                             ?>
                                 <li class="nav__item">
-                                    <a href="index.php?ctrl=user&action=listUsers">See users</a>
+                                    <a href="index.php?ctrl=security&action=listUsers">See users</a>
                                 </li>
                             <?php } ?>
                         </ul>

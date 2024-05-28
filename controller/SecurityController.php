@@ -106,6 +106,69 @@ class SecurityController extends AbstractController
         ];
     }
 
+    public function listUsers()
+    {
+        // Initialisation du gestionnaire d'utilisateurs
+        $userManager = new UserManager();
+
+        // Récupération de tous les utilisateurs, triés par nickname de manière décroissante
+        $users = $userManager->findAll(["nickName", "DESC"]);
+
+        // Retourne les informations nécessaires pour afficher la vue
+        return [
+            // Chemin vers le fichier de vue qui affichera les utilisateurs
+            "view" => VIEW_DIR . "security/listUsers.php",
+
+            // Description meta pour la page, utile pour le SEO
+            "meta_description" => "See users from the forum",
+
+            // Données à passer à la vue
+            "data" => [
+                // Les utilisateurs récupérés, passés à la vue
+                "users" => $users
+            ]
+        ];
+    }
+
+    public function ban($id)
+    {
+
+        $this->restrictTo("ROLE_ADMIN");
+
+        $userManager = new UserManager();
+        $user = $userManager->findOneById($id);
+
+        if ($user) {
+            $data = array(
+                'isBanned' => 1
+            );
+        }
+
+        $userManager->update($data, $id);
+
+        Session::addFlash("success", "User banned succesfully !");
+        $this->redirectTo("security", "listUsers");
+    }
+
+    public function unban($id)
+    {
+        $this->restrictTo("ROLE_ADMIN");
+
+        $userManager = new UserManager();
+        $user = $userManager->findOneById($id);
+
+        if ($user) {
+            $data = array(
+                'isBanned' => 0
+            );
+        }
+
+        $userManager->update($data, $id);
+
+        Session::addFlash("success", "User unbanned succesfully !");
+        $this->redirectTo("security", "listUsers");
+    }
+
     public function uploadProfilePicture($id)
     {
         // Initialisation du gestionnaire d'utilisateurs
@@ -169,17 +232,31 @@ class SecurityController extends AbstractController
                 // Création de l'image à partir du fichier
                 $profilePicture = imagecreatefromstring(file_get_contents('./public/uploads/profilePictures/' . $file));
 
-                // Chemin pour l'image au format webp
-                $webpPath = "./public/uploads/profilePictures/" . $uniqueName . ".webp";
+                // Obtention des dimensions de l'image
+                $width = imagesx($profilePicture);
+                $height = imagesy($profilePicture);
 
-                // Conversion de l'image en format webp
-                imagewebp($profilePicture, $webpPath);
+                // Dimensions souhaitées pour l'image redimensionnée
+                $newWidth = 200; // Nouvelle largeur souhaitée
+                $newHeight = 200; // Nouvelle hauteur souhaitée
+
+                // Création d'une nouvelle ressource image pour l'image redimensionnée
+                $resizedProfilePicture = imagecreatetruecolor($newWidth, $newHeight);
+
+                // Redimensionnement de l'image
+                imagecopyresampled($resizedProfilePicture, $profilePicture, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                // Chemin pour l'image redimensionnée au format webp
+                $resizedWebpPath = "./public/uploads/profilePictures/" . $uniqueName . "_resized.webp";
+
+                // Conversion de l'image redimensionnée en format webp
+                imagewebp($resizedProfilePicture, $resizedWebpPath);
 
                 // Suppression de l'image JPG ou PNG téléchargée (en amont, elle a été convertie en webp)
                 unlink('./public/uploads/profilePictures/' . $file);
 
                 // Chemin du fichier pour la base de données
-                $pathFile = $webpPath;
+                $pathFile = $resizedWebpPath;
 
                 // Données à mettre à jour dans la base de données
                 $data = [
@@ -199,9 +276,12 @@ class SecurityController extends AbstractController
                 Session::setUser($user);
 
                 // Affichage d'un message de succès
-                Session::addFlash("success", "Test !");
+                Session::addFlash("success", "Profile picture uploaded successfully !");
 
                 // Redirection vers la page de profil
+                $this->redirectTo("security", "profile");
+            } else {
+                Session::addFlash("error", "There's no file uploaded !");
                 $this->redirectTo("security", "profile");
             }
         }

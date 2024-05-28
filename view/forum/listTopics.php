@@ -38,7 +38,7 @@ $nbTopics = $result["data"]['nbTopics'];
                             <td>by <?= $topic->getUser() ?></td>
                             <td><?= $topic->getNbPosts() ?></td>
                             <?php if (App\Session::isAdmin()) { ?>
-                                <td><a href="index.php?ctrl=forum&action=deleteTopic&id=<?= $topic->getId() ?>"><i class="fa-solid fa-delete-left"></i></a></td>
+                                <td><a href="index.php?ctrl=forum&action=deleteTopic&id=<?= $topic->getId() ?>" class="delete-btn"><i class="fa-solid fa-delete-left"></i></a></td>
                             <?php } ?>
                     </tr>
                 </tbody>
@@ -49,7 +49,7 @@ $nbTopics = $result["data"]['nbTopics'];
             <p>There's no topic in this category.</p>
         <?php } ?>
 
-        <?php if (isset($_SESSION['user'])) { ?>
+        <?php if (isset($_SESSION['user']) && !$_SESSION['user']->getIsBanned() == "1") { ?>
 
             <form action="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>&action=addTopic" method="POST" id="add-topic">
                 <div class="form__group">

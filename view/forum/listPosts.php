@@ -26,14 +26,29 @@ $posts = $result["data"]['posts'];
                 <a href="index.php?ctrl=forum&action=unlockTopic&id=<?= $topic->getId() ?>">
                     <i class="fa-solid fa-unlock"></i>
                 </a>
-        <?php }
+            <?php }
         }
 
         foreach ($posts as $post) { ?>
             <p><?= $post->getUser() ?> le <?= $post->getPublicationDate() ?><?php if (App\Session::isAdmin()) { ?> - <a href="index.php?ctrl=forum&action=deletePost&id=<?= $post->getId() ?>"><i class="fa-solid fa-delete-left"></i></a> <?php } ?></p>
             <p><?= strip_tags(html_entity_decode($post->getContent()), "<b><i><span>") ?></p>
             <br>
-        <?php } ?>
+
+            <?php if ($post->getUser() == App\Session::getUser()) { ?>
+                <p><i class="fa-solid fa-pen" onclick="show(this)"></i></p>
+                <div class="edit-post">
+                    <form action="index.php?ctrl=forum&action=updatePost&id=<?= $post->getId() ?>" method="POST" id="edit-post">
+
+                        <div class="form__group">
+                            <textarea id="content" name="content" class="post"><?= $post->getContent() ?></textarea>
+                        </div>
+
+                        <button id="btn-edit" type="submit" name="submit" value="Edit message" aria-label="Edit message">Edit message</button>
+
+                    </form>
+                </div>
+        <?php }
+        } ?>
 
         <?php if (isset($_SESSION['user']) && $topic->getIsLocked() == 0) { ?>
             <form action="index.php?ctrl=forum&action=addPost&id=<?= $topic->getId() ?>" method="POST" id="add-post">
@@ -52,3 +67,13 @@ $posts = $result["data"]['posts'];
     </div>
 
 </section>
+<script>
+    function show(element) {
+        var editPostDiv = element.parentElement.nextElementSibling;
+        if (editPostDiv.style.display === "none" || editPostDiv.style.display === "") {
+            editPostDiv.style.display = "block";
+        } else {
+            editPostDiv.style.display = "none";
+        }
+    }
+</script>
