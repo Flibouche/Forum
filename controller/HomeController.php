@@ -10,7 +10,7 @@ class HomeController extends AbstractController implements ControllerInterface {
     public function index(){
         return [
             "view" => VIEW_DIR."home.php",
-            "meta_description" => "Page d'accueil du forum"
+            "meta_description" => "Forum home page"
         ];
     }
         
@@ -22,7 +22,7 @@ class HomeController extends AbstractController implements ControllerInterface {
 
         return [
             "view" => VIEW_DIR."security/users.php",
-            "meta_description" => "Liste des utilisateurs du forum",
+            "meta_description" => "See users from the forum",
             "data" => [ 
                 "users" => $users 
             ]

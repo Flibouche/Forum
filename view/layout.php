@@ -32,17 +32,14 @@
                             </li>
 
                             <li class="nav__item">
-                                <a href="index.php?ctrl=forum&action=listCategories">Categories</a>
+                                <a href="index.php?ctrl=forum&action=index">Categories</a>
                             </li>
 
                             <?php
                             if (App\Session::isAdmin()) {
                             ?>
                                 <li class="nav__item">
-                                    <a href="index.php?ctrl=home&action=users">See users</a>
-                                </li>
-                                <li class="nav__item">
-                                    <a href="index.php?ctrl=user&action=listUsers">Liste des utilisateurs</a>
+                                    <a href="index.php?ctrl=user&action=listUsers">See users</a>
                                 </li>
                             <?php } ?>
                         </ul>

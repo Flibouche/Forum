@@ -51,12 +51,12 @@ class ForumController extends AbstractController implements ControllerInterface
                     if ($categoryManager->findCategoryByName($name)) {
                         // Si la catégorie existe déjà, affiche un message d'erreur et redirige
                         Session::addFlash("error", "Category name is already taken !");
-                        $this->redirectTo("forum", "listCategories");
+                        $this->redirectTo("forum", "index");
                     } else {
                         // Si la catégorie n'existe pas encore, ajoute-la
                         $categoryManager->add(["name" => $name]);
                         Session::addFlash("success", "Category added successfully !");
-                        $this->redirectTo("forum", "listCategories");
+                        $this->redirectTo("forum", "index");
                     }
                 }
             }
@@ -76,8 +76,49 @@ class ForumController extends AbstractController implements ControllerInterface
         } else {
             $categoryManager->delete($id);
             Session::addFlash("success", "Category deleted !");
-            $this->redirectTo("forum", "listCategories");
+            $this->redirectTo("forum", "index");
         }
+    }
+
+    public function updateCategory($id)
+    {
+        $this->restrictTo("ROLE_ADMIN");
+
+        $categoryManager = new CategoryManager();
+        $category = $categoryManager->findOneById($id);
+
+        if (isset($_POST['submit'])) {
+            // Vérifie si le champ 'name' est défini et non vide
+            if (isset($_POST['name']) && (!empty($_POST['name']))) {
+                // Sanitize le nom de la catégorie pour éviter les injections de code
+                $name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $name = ucfirst($name); // Capitalize le nom de la catégorie
+
+                if ($name) {
+                    // Vérifie si la catégorie existe déjà
+                    if ($categoryManager->findCategoryByName($name)) {
+                        // Si la catégorie existe déjà, affiche un message d'erreur et redirige
+                        Session::addFlash("error", "Category name is already taken !");
+                        $this->redirectTo("forum", "index");
+                    } else {
+                        $data = array(
+                            'name' => $name
+                        );
+                        $categoryManager->update($data, $id);
+                        Session::addFlash("success", "Category updated successfully !");
+                        $this->redirectTo("forum", "index");
+                    }
+                }
+            }
+        }
+
+        return [
+            "view" => VIEW_DIR . "update/updateCategory.php",
+            "meta_description" => "Update the category : " . $category->getName(),
+            "data" => [
+                "category" => $category
+            ]
+        ];
     }
 
     // Topics
@@ -151,13 +192,13 @@ class ForumController extends AbstractController implements ControllerInterface
 
                                 // Ajoute un message de succès et redirige vers la liste des topics de la catégorie
                                 Session::addFlash("success", "Topic added successfully !");
-                                $this->redirectTo("forum", "listTopic", $id);
+                                $this->redirectTo("forum", "listTopicsByCategory", $id);
                             }
                         }
                     } else {
                         // Si le titre n'est pas valide, ajoute un message d'erreur
                         Session::addFlash("error", "Please enter a post");
-                        $this->redirectTo("forum", "listTopic");
+                        $this->redirectTo("forum", "listTopicsByCategory");
                     }
                 }
             }
@@ -171,14 +212,90 @@ class ForumController extends AbstractController implements ControllerInterface
         $topicManager = new TopicManager();
         $topic = $topicManager->findOneById($id);
 
+        $categoryId = $topic->getCategory()->getId();
+
         if (!$topic) {
             Session::addFlash("error", "It doesn't work !");
             $this->redirectTo("home", "index");
         } else {
             $topicManager->delete($id);
             Session::addFlash("success", "Topic deleted !");
-            $this->redirectTo("forum", "listTopic");
+            $this->redirectTo("forum", "listTopicsByCategory", $categoryId);
         }
+    }
+
+    public function lockTopic($id)
+    {
+        $this->restrictTo("ROLE_ADMIN");
+
+        $topicManager = new TopicManager();
+        $topic = $topicManager->findOneById($id);
+
+        if (!$topic) {
+            Session::addFlash("error", "It doesn't work !");
+            $this->redirectTo("home", "index");
+        } else {
+            $data = array(
+                'isLocked' => 1
+            );
+            $topicManager->update($data, $id);
+            Session::addFlash("success", "Topic locked !");
+            $this->redirectTo("forum", "listPosts", $id);
+        }
+    }
+
+    public function unlockTopic($id)
+    {
+        $this->restrictTo("ROLE_ADMIN");
+
+        $topicManager = new TopicManager();
+        $topic = $topicManager->findOneById($id);
+
+        if (!$topic) {
+            Session::addFlash("error", "It doesn't work !");
+            $this->redirectTo("home", "index");
+        } else {
+            $data = array(
+                'isLocked' => 0
+            );
+            $topicManager->update($data, $id);
+            Session::addFlash("success", "Topic unlocked !");
+            $this->redirectTo("forum", "listPosts", $id);
+        }
+    }
+
+    public function updateTopic($id)
+    {
+        $this->restrictTo("ROLE_ADMIN");
+
+        $topicManager = new TopicManager();
+        $topic = $topicManager->findOneById($id);
+
+        $categoryId = $topic->getCategory()->getId();
+
+        if (isset($_POST['submit'])) {
+            if (isset($_POST['title']) && (!empty($_POST['title']))) {
+                $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $title = ucfirst($title); // Capitalize le nom de la catégorie
+
+                if ($title) {
+                    $data = array(
+                        'title' => $title
+                    );
+                    $topicManager->update($data, $id);
+                    Session::addFlash("success", "Topic updated successfully !");
+                    $this->redirectTo("forum", "listTopicsByCategory", $categoryId);
+                }
+            }
+        }
+
+        return [
+            "view" => VIEW_DIR . "update/updateTopic.php",
+            "meta_description" => "Update the topic : " . $topic->getTitle(),
+            "data" => [
+                "topic" => $topic
+            ]
+        ];
     }
 
     // Posts

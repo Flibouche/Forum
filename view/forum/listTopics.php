@@ -16,6 +16,7 @@ $nbTopics = $result["data"]['nbTopics'];
             <table>
                 <thead>
                     <tr>
+                        <th scope="col"></th>
                         <th scope="col">SUBJECT</th>
                         <th scope="col">AUTHOR</th>
                         <th scope="col">NB MESSAGES</th>
@@ -27,6 +28,12 @@ $nbTopics = $result["data"]['nbTopics'];
                 <tbody>
                     <tr> <?php
                             foreach ($topics as $topic) { ?>
+                            <?php
+                                if ($topic->getIsLocked() == 0) { ?>
+                                <th scope="row"><i class="fa-solid fa-folder"></i></th>
+                            <?php } else { ?>
+                                <th scope="row"><i class="fa-solid fa-lock"></i></th>
+                            <?php } ?>
                             <th scope="row"><a href="index.php?ctrl=forum&action=listPosts&id=<?= $topic->getId() ?>"><?= $topic ?></a></th>
                             <td>by <?= $topic->getUser() ?></td>
                             <td><?= $topic->getNbPosts() ?></td>
@@ -44,7 +51,7 @@ $nbTopics = $result["data"]['nbTopics'];
 
         <?php if (isset($_SESSION['user'])) { ?>
 
-            <form action="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>&action=addTopic" method="POST" id="create-topic">
+            <form action="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>&action=addTopic" method="POST" id="add-topic">
                 <div class="form__group">
                     <label for="title">Enter a title for the topic</label>
                     <input type="title" name="title" id="title" aria-label="Topic's Title" placeholder="Enter title">
