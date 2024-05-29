@@ -8,61 +8,70 @@ $nbTopics = $result["data"]['nbTopics'];
 
     <div class="listTopics__container container grid">
 
-        <h1>Topics' list of <?= $category ?> (<?= $nbTopics->getNbTopics() ?>)</h1>
+        <div class="listTopics-list">
 
-        <?php
-        if (!$topics == null) {
-        ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">SUBJECT</th>
-                        <th scope="col">AUTHOR</th>
-                        <th scope="col">NB MESSAGES</th>
-                        <?php if (App\Session::isAdmin()) { ?>
-                            <th scope="col">DELETE</th>
-                        <?php } ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr> <?php
-                            foreach ($topics as $topic) { ?>
-                            <?php
-                                if ($topic->getIsLocked() == 0) { ?>
-                                <th scope="row"><i class="fa-solid fa-folder"></i></th>
-                            <?php } else { ?>
-                                <th scope="row"><i class="fa-solid fa-lock"></i></th>
-                            <?php } ?>
-                            <th scope="row"><a href="index.php?ctrl=forum&action=listPosts&id=<?= $topic->getId() ?>"><?= $topic ?></a></th>
-                            <td>by <?= $topic->getUser() ?></td>
-                            <td><?= $topic->getNbPosts() ?></td>
+            <h1>Topics' list of <?= $category ?> (<?= $nbTopics->getNbTopics() ?>)</h1>
+
+            <?php
+            if (!$topics == null) {
+            ?>
+                <table>
+                    <thead>
+                        <tr class="bordered">
+                            <th scope="col"></th>
+                            <th scope="col">SUBJECT</th>
+                            <th scope="col">AUTHOR</th>
+                            <th scope="col">NB MESSAGES</th>
                             <?php if (App\Session::isAdmin()) { ?>
-                                <td><a href="index.php?ctrl=forum&action=deleteTopic&id=<?= $topic->getId() ?>" class="delete-btn"><i class="fa-solid fa-delete-left"></i></a></td>
+                                <th scope="col">DELETE</th>
                             <?php } ?>
-                    </tr>
-                </tbody>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($topics as $topic) { ?>
+                            <tr class="bordered">
+                                <?php
+                                if ($topic->getIsLocked() == 0) { ?>
+                                    <th scope="row"><i class="fa-solid fa-folder"></i></th>
+                                <?php } else { ?>
+                                    <th scope="row"><i class="fa-solid fa-lock"></i></th>
+                                <?php } ?>
+                                <th scope="row"><a href="index.php?ctrl=forum&action=listPosts&id=<?= $topic->getId() ?>"><?= $topic ?></a></th>
+                                <td>by <?= $topic->getUser() ?></td>
+                                <td><?= $topic->getNbPosts() ?></td>
+                                <?php if (App\Session::isAdmin()) { ?>
+                                    <td><a href="index.php?ctrl=forum&action=deleteTopic&id=<?= $topic->getId() ?>" class="delete-btn"><i class="fa-solid fa-delete-left"></i></a></td>
+                                <?php } ?>
+                            </tr>
+                    </tbody>
+                <?php } ?>
+                </table>
+            <?php
+            } else { ?>
+                <p>There's no topic in this category.</p>
             <?php } ?>
-            </table>
-        <?php
-        } else { ?>
-            <p>There's no topic in this category.</p>
-        <?php } ?>
+        </div>
 
         <?php if (isset($_SESSION['user']) && !$_SESSION['user']->getIsBanned() == "1") { ?>
 
-            <form action="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>&action=addTopic" method="POST" id="add-topic">
-                <div class="form__group">
-                    <label for="title">Enter a title for the topic</label>
-                    <input type="title" name="title" id="title" aria-label="Topic's Title" placeholder="Enter title">
-                </div>
+            <div class="listTopics-add">
 
-                <div class="form__group">
-                    <textarea id="content" name="content" class="post" placeholder="Add message"></textarea>
-                </div>
+                <form action="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>&action=addTopic" method="POST" id="add-topic">
+                    <div class="form__group">
+                        <label for="title">Enter a title for the topic</label>
+                        <input type="title" name="title" id="title" aria-label="Topic's Title" placeholder="Enter title">
+                    </div>
 
-                <button id="btn-add" type="submit" name="submit" value="Add topic" aria-label="Add topic">Add topic</button>
-            </form>
+                    <div class="form__group">
+                        <textarea id="content" name="content" class="post" placeholder="Add message"></textarea>
+                    </div>
+
+                    <button id="btn-add" type="submit" name="submit" value="Add topic" aria-label="Add topic">Add topic</button>
+
+                </form>
+
+            </div>
 
         <?php } ?>
 

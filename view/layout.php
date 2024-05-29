@@ -28,18 +28,18 @@
                         <ul class="nav__list">
 
                             <li class="nav__item">
-                                <a href="index.php?ctrl=home&action=index">Home</a>
+                                <a href="index.php?ctrl=home&action=index" aria-label="Home">Home</a>
                             </li>
 
                             <li class="nav__item">
-                                <a href="index.php?ctrl=forum&action=index">Categories</a>
+                                <a href="index.php?ctrl=forum&action=index" aria-label="Categories">Categories</a>
                             </li>
 
                             <?php
                             if (App\Session::isAdmin()) {
                             ?>
                                 <li class="nav__item">
-                                    <a href="index.php?ctrl=security&action=listUsers">See users</a>
+                                    <a href="index.php?ctrl=security&action=listUsers" aria-label="See users">See users</a>
                                 </li>
                             <?php } ?>
                         </ul>
@@ -55,13 +55,25 @@
                         if (App\Session::getUser()) {
                             $user = App\Session::getUser()->getId();
                         ?>
-                            <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser() ?></a>
-                            <a href="index.php?ctrl=security&action=logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                            <a href="index.php?ctrl=security&action=profile" class="nav__profile-picture">
+                                <img src="<?= App\Session::getUser()->getProfilePicture() ?>" alt="<?= App\Session::getUser()->getNickName() ?>'s profile picture" aria-label="<?= App\Session::getUser()->getNickName() ?>'s profile picture">
+                            </a>
+
+                            <a href="index.php?ctrl=security&action=logout" class="nav__logout">
+                                <i class="fa-solid fa-arrow-right-from-bracket" aria-label="Logout"></i>
+                            </a>
+
                         <?php
                         } else {
                         ?>
-                            <a href="index.php?ctrl=security&action=login"><i class="fa-solid fa-user"></i></a>
-                            <a href="index.php?ctrl=security&action=register"><i class="fa-solid fa-user-plus"></i></a>
+                            <a href="index.php?ctrl=security&action=login">
+                                <i class="fa-solid fa-user" aria-label="Login"></i>
+                            </a>
+
+                            <a href="index.php?ctrl=security&action=register">
+                                <i class="fa-solid fa-user-plus" aria-label="Register"></i>
+                            </a>
+
                         <?php
                         }
                         ?>
@@ -70,7 +82,7 @@
                         <div class="nav__toggle" id="nav-toggle" aria-label="Toggle Navigation">
                             <i class="fa-solid fa-bars" aria-label="Toggle Navigation"></i>
                         </div>
-                        
+
                     </div>
                 </nav>
             </header>
@@ -82,7 +94,7 @@
         </div>
 
         <footer class="footer__container container">
-            <p><a href="#">Règlement du forum</a> - <a href="#">Mentions légales</a> - <a href="#">Contact</a> - <a href="#">Need help ?</a></p>
+            <p><a href="#">Forum Rules</a> - <a href="#">Legal Notice</a> - <a href="#">Contact</a> - <a href="#">Need help ?</a></p>
             <p>&copy; Flibouche <?= date_create("now")->format("Y") ?></p>
         </footer>
 

@@ -53,7 +53,6 @@ section {
 }
 
 h1 {
-    color: var(--primary-color);
     font-weight: var(--font-semi-bold);
 }
 
@@ -159,6 +158,20 @@ nav {
     right: 0;
 }
 
+.nav__profile-picture {
+    overflow: hidden;
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+    transition: .7s;
+}
+
+.nav__profile-picture img {
+    object-fit: cover;
+    width: 33px;
+    height: 33px;
+}
+
 /*========================== Footer ======================*/
 
 footer {
@@ -169,19 +182,160 @@ footer {
 
 /*========================== List Categories ======================*/
 
-.listTopics__container {
-    justify-content: center;
+.listCategories__container {
+    margin-top: 50px;
 }
 
-.listTopics__container h1 {
+.listCategories__container h1 {
+    background-color: var(--text-color);
+    padding: 5px 0px 5px 5px;
+}
+
+.listCategories-list {
+    text-align: left;
+    color: var(--background-color);
+    background-color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.listCategories-list hr {
+    color: var(--text-color);
+}
+
+.listCategories-category-name,
+.listCategories-category-nbTopics {
+    width: 200px;
+}
+
+.listCategories-category-name {
+    font-weight: var(--font-bold);
+}
+
+.listCategories-category-nbTopics {
+    text-align: right;
+    padding-right: 20px;
+}
+
+.listCategories-category {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    padding: 20px 0px 20px 10px;
+}
+
+.listCategories-category a {
+    color: var(--background-color);
+}
+
+/*========================== List Topics ======================*/
+
+table {
+    border-collapse: collapse;
+}
+
+.listTopics__container {
+    margin-top: 50px;
+}
+
+.listTopics-list h1 {
+    text-align: left;
+    color: var(--background-color);
+    background-color: var(--text-color);
+    padding: 5px 0px 5px 5px;
+}
+
+.listTopics-list table thead {
+    color: var(--background-color);
+    background-color: var(--secondary-color);
+    padding: 20px 0px 20px 10px;
+}
+
+.listTopics-list {
+    margin-bottom: 20px;
+}
+
+.listTopics-list table {
+    width: clamp(330px, 80vw, 954px);
+}
+
+.listTopics-list table tbody {
+    color: var(--background-color);
+    background-color: var(--secondary-color);
+}
+
+.listTopics-list a {
+    color: var(--background-color);
+}
+
+.listTopics-list table th {
+    padding: 20px 0px 20px 10px;
+}
+
+.bordered {
+    border-bottom: 2px solid var(--text-color);
+}
+
+
+
+/*========================== List Posts ======================*/
+
+.listPosts__container {
+    margin-top: 50px;
+}
+
+.listPosts-list h1 {
+    text-align: left;
+    color: var(--background-color);
+    background-color: var(--text-color);
+    padding: 5px 0px 5px 5px;
+}
+
+.listPosts-options {
     text-align: left;
 }
 
-.listTopics__container thead {
-    background-color: var(--primary-color);
+.listPosts-post {
+    width: clamp(330px, 80vw, 954px);
+    margin: 50px 0px;
+    border: 2px solid var(--text-color);
 }
 
-/*========================== List Posts ======================*/
+.listPosts-user {
+    text-align: left;
+    padding: 5px 0px 5px 5px;
+    color: var(--background-color);
+    background-color: var(--text-color);
+}
+
+.profile-picture {
+    overflow: hidden;
+    border-radius: 50px;
+    width: 33px;
+    height: 33px;
+    transition: .7s;
+}
+
+.profile-picture img {
+    object-fit: cover;
+    width: 33px;
+    height: 33px;
+}
+
+.listPosts-user a {
+    color: var(--background-color);
+}
+
+.listPosts-content {
+    text-align: left;
+    padding: 5px 0px 5px 5px;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.edit-pen {
+    text-align: right;
+    padding-right: 5px;
+}
 
 .edit-post {
     display: none;
